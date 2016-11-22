@@ -76,8 +76,8 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
                     csv_writer.writerow([float(prev_end)+buffer_secs,1,float(start)-float(prev_end)-float(buffer_secs),default_speaker.replace(',',';')])
                     csv_writer.writerow([start+buffer_secs,0,float(duration)-buffer_secs,'Applause'])
                     prev_end=start+duration
-                print prev_end
-                print len(output)
+                #print prev_end
+                #print len(output)
                 if (prev_end < len(output)):
                     csv_writer.writerow([float(prev_end)+buffer_secs,1,float(len(output)-prev_end)-buffer_secs-2,default_speaker.replace(',',';')]) # "-2" is a kluge to make sure final tag doesn't exceed length of audio file
 
