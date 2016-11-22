@@ -34,7 +34,7 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker):
 	wav_source=True
 	if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
 		wav_source=False                         # if input is MP3
-		temp_filename=media_path.split('/')[-1]+'_temp.wav'
+		temp_filename=inputfile.split('/')[-1]+'_temp.wav'
 		wav_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
 		subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
 	else:
