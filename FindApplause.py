@@ -73,13 +73,16 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
                 prev_end='0.0'
                 csv_writer = csv.writer(csv_fo)
                 for start,duration in applause_ranges:
-                    csv_writer.writerow([float(prev_end)+buffer_secs,1,float(start)-float(prev_end)-float(buffer_secs),default_speaker.replace(',',';')])
-                    csv_writer.writerow([start+buffer_secs,0,float(duration)-buffer_secs,'Applause'])
+                    if float(float(start)-float(prev_end)-float(buffer_secs))>0.0:
+                        csv_writer.writerow([float(prev_end)+buffer_secs,1,float(start)-float(prev_end)-float(buffer_secs),default_speaker.replace(',',';')])
+                    if float(float(duration)-buffer_secs)>0:
+                        csv_writer.writerow([start+buffer_secs,0,float(duration)-buffer_secs,'Applause'])
                     prev_end=start+duration
                 #print prev_end
                 #print len(output)
                 if (prev_end < len(output)):
-                    csv_writer.writerow([float(prev_end)+buffer_secs,1,float(len(output)-prev_end)-buffer_secs-2,default_speaker.replace(',',';')]) # "-2" is a kluge to make sure final tag doesn't exceed length of audio file
+                    if float(float(len(output)-prev_end)-buffer_secs-1)>0.0:
+                        csv_writer.writerow([float(prev_end)+buffer_secs,1,float(len(output)-prev_end)-buffer_secs-1,default_speaker.replace(',',';')]) # "-1" is a kluge to make sure final tag doesn't exceed length of audio file
 
 
 
@@ -100,11 +103,11 @@ def main(argv):
             print "FindApplause.py -i <inputfile> -o <outputfile> -p -n 'Speaker Name'"
             sys.exit()
         elif opt in ("-i", "--ifile"):
-            inputfile = arg
+            inputfile = arg.strip('"')
         elif opt in ("-o", "--ofile"):
             outputfile = arg
             to_csv=True
-    if opt in ("-d"):
+        elif opt in ("-d"):
             default_speaker=arg
     if ("-p" in sys.argv[1:]):
         plot=True
