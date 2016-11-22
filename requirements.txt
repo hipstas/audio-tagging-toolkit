@@ -1,0 +1,6 @@
+pyAudioAnalysis
+pandas
+numpy
+matplotlib
+pyAudioAnalysis
+pydub
