@@ -6,14 +6,12 @@ import subprocess
 import csv
 import array
 import random
-import pandas as pd
-import numpy as np
 from pyAudioAnalysis import audioSegmentation as aS
 from itertools import groupby
 from operator import itemgetter
 from pydub import AudioSegment
 from pydub.utils import get_array_type
-import matplotlib.pyplot as plt
+
 
 #-i --infile
 #-o --outfile (csv) (if none, replace file extension with cab)
@@ -32,7 +30,7 @@ def seconds_list_to_ranges(seconds_list):
     return ranges
 
 
-def find_applause(inputfile,outputfile,plot):
+def find_applause(inputfile,outputfile,to_csv,plot):
     wav_source=True
     if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
         wav_source=False                         # if input is MP3
@@ -41,8 +39,6 @@ def find_applause(inputfile,outputfile,plot):
         subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
     else:
         wav_path=inputfile
-	if outputfile=='':
-		outputfile=inputfile[:-4]+'_applause.csv'
     classifier_model_path = './svm_applause_model'
     output, classesAll, acc, CM = aS.mtFileClassification(wav_path, classifier_model_path, "svm")
     output = list(output)
@@ -52,15 +48,25 @@ def find_applause(inputfile,outputfile,plot):
             applause_secs.append(i)
     applause_ranges=seconds_list_to_ranges(applause_secs)
     if (plot==True)&(len(applause_ranges)>0):
-        print applause_ranges
-        print '\n'
-        pd.Series(output).plot()
-        plt.show()
+		import matplotlib.pyplot as plt
+		import pandas as pd
+		import numpy as np
+		print applause_ranges
+		print '\n'
+		pd.Series(output).plot()
+		plt.title(inputfile.split('/')[-1])
+		plt.ylabel('Seconds')
+		plt.xlabel('Applause classification')
+		plt.show()
     if wav_source==False:
         os.remove(wav_path)
-    with open(outputfile, 'w') as csv_fo:
-		csv_writer = csv.writer(csv_fo)
-		csv_writer.writerows(applause_ranges)
+    if to_csv==True:
+    	if outputfile=='':
+			outputfile=inputfile[:-4]+'_applause.csv'
+        with open(outputfile, 'w') as csv_fo:
+			applause_ranges_expanded=[(start,1,duration) for start,duration in applause_ranges]
+			csv_writer = csv.writer(csv_fo)
+			csv_writer.writerows(applause_ranges_expanded)
 
 
 def main(argv):
@@ -68,8 +74,9 @@ def main(argv):
     outputfile = ''
     plot=False
     default_speaker=''
+    to_csv=False
     try:
-      opts, args = getopt.getopt(argv,"hi:o:pd:",["ifile=","ofile="])
+      opts, args = getopt.getopt(argv,"hi:o:pd:c",["ifile=","ofile="])
     except getopt.GetoptError:
       print "FindApplause.py -i <inputfile> -o <outputfile> -p -d 'Default Speaker Name'"
       sys.exit(2)
@@ -81,8 +88,11 @@ def main(argv):
          inputfile = arg
       elif opt in ("-o", "--ofile"):
          outputfile = arg
-      elif ("-p" in args):
+         to_csv=True
+      elif ("-p" in sys.argv[1:]):
           plot=True
+      elif ("-c" in sys.argv[1:])|("--csv" in sys.argv[1:]):
+          to_csv=True
       elif opt in ("-d"):
          default_speaker=arg
                   
@@ -95,7 +105,7 @@ def main(argv):
         if (default_speaker!=''):
             find_applause_else_speaker(inputfile,outputfile,plot)
         else:
-            find_applause(inputfile,outputfile,plot)
+            find_applause(inputfile,outputfile,to_csv,plot)
 
 
 
