@@ -73,8 +73,8 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
                 prev_end='0.0'
                 csv_writer = csv.writer(csv_fo)
                 for start,duration in applause_ranges:
-                    if float(float(start)-float(prev_end)-float(buffer_secs))>0.0:
-                        csv_writer.writerow([float(prev_end)+buffer_secs,1,float(start)-float(prev_end)-float(buffer_secs),default_speaker.replace(',',';')])
+                    if float(float(start)-float(prev_end)-(float(buffer_secs)*2))>0.0:
+                        csv_writer.writerow([float(prev_end)+buffer_secs,1,float(start)-float(prev_end)-(float(buffer_secs)*2),default_speaker.replace(',',';')])
                     if float(float(duration)-buffer_secs)>0:
                         csv_writer.writerow([start+buffer_secs,0,float(duration)-buffer_secs,'Applause'])
                     prev_end=start+duration
