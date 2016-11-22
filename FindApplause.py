@@ -29,23 +29,14 @@ def seconds_list_to_ranges(seconds_list):
     for k, g in groupby(enumerate(seconds_list), lambda (i,x):i-x):
         group = map(itemgetter(1), g)
         ranges.append((group[0], group[-1]))
+    ranges=[(i,x+1) for i,x in ranges]
     return ranges
 
-
-# Displays specified audio segment in Jupyter window using IPython.display
-def display_clip(wav_path,start_time,end_time):
-    track_data = AudioSegment.from_wav(file=wav_path)
-    track_data = track_data.set_channels(1)
-    bit_depth = track_data.sample_width * 8
-    clip_data = track_data[int(1000*start_time):int(1000*end_time)]
-    array_type = get_array_type(bit_depth)
-    numeric_array = array.array(array_type, clip_data._data)
-    display(Audio(numeric_array, rate=track_data.frame_rate))
 
 
 def find_applause(audio_path,plot):
     is_mp3=False
-    if audio_path.lower()[-4:]=='.mp3':     # Creates a temporary WAV
+    if audio_path.lower()([-4:]=='.mp3')|([-4:]=='.mp4'):     # Creates a temporary WAV
         is_mp3=True                         # if input is MP3
         random.seed(audio_path)
         wav_path='/var/tmp/'+str(random.random())+'_temp.wav'   # Filename for temp WAV is random number
@@ -58,16 +49,17 @@ def find_applause(audio_path,plot):
     counter=0
     applause_secs=[]
     for value in output:
-        if value>0.0:
+        if float(value)==1.0:
             applause_secs.append(counter)
         counter+=1
     applause_ranges=seconds_list_to_ranges(applause_secs)
     if len(applause_ranges)>0:
-        print "Applause segments at 1-second resolution. Add 1 to 2nd value in each 2-tuple for inclusive time span:"
-        print applause_ranges
-        print '\n'
-        pd.Series(output).plot()
-        plt.show()
+        print "Applause segments at 1-second resolution."
+        if plot==True:
+            print applause_ranges
+            print '\n'
+            pd.Series(output).plot()
+            plt.show()
     if is_mp3==True:
         os.remove(wav_path)
 
