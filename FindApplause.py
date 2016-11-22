@@ -30,80 +30,90 @@ def seconds_list_to_ranges(seconds_list):
     return ranges
 
 
-def find_applause(inputfile,outputfile,to_csv,plot,default_speaker):
-	wav_source=True
-	if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
-		wav_source=False                         # if input is MP3
-		temp_filename=inputfile.split('/')[-1]+'_temp.wav'
-		wav_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
-		subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
-	else:
-		wav_path=inputfile
-	classifier_model_path = './svm_applause_model'
-	output, classesAll, acc, CM = aS.mtFileClassification(wav_path, classifier_model_path, "svm")
-	output = list(output)
-	applause_secs=[]
-	for i, x in enumerate(output):
-		if float(x)==1.0:
-			applause_secs.append(i)
-	applause_ranges=seconds_list_to_ranges(applause_secs)
-	if (plot==True)&(len(applause_ranges)>0):
-		import matplotlib.pyplot as plt
-		import pandas as pd
-		import numpy as np
-		print applause_ranges
-		print '\n'
-		pd.Series(output).plot()
-		plt.title(inputfile.split('/')[-1])
-		plt.xlabel('Seconds')
-		plt.ylabel('Applause Classification')
-		plt.show()
-	if wav_source==False:
-		os.remove(wav_path)
-	if to_csv==True:
-		if outputfile=='':
-			outputfile=inputfile[:-4]+'_applause.csv'
-		if default_speaker=='': 
-			with open(outputfile, 'w') as csv_fo:
-				applause_ranges_expanded=[(start,1,duration) for start,duration in applause_ranges]
-				csv_writer = csv.writer(csv_fo)
-				csv_writer.writerows(applause_ranges_expanded)
-		else:
-			with open(outputfile, 'w') as csv_fo:
-				csv_writer = csv.writer(csv_fo)
-				prev_end='0.0'
-				applause_ranges_expanded=[(start,1,duration,default_speaker) for start,duration in applause_ranges]
-				csv_writer = csv.writer(csv_fo)
-				csv_writer.writerows(applause_ranges_expanded)
+def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
+    wav_source=True
+    if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
+        wav_source=False                         # if input is MP3
+        temp_filename=inputfile.split('/')[-1]+'_temp.wav'
+        wav_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
+        subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
+    else:
+        wav_path=inputfile
+    classifier_model_path = './svm_applause_model'
+    output, classesAll, acc, CM = aS.mtFileClassification(wav_path, classifier_model_path, "svm")
+    output = list(output)
+    applause_secs=[]
+    for i, x in enumerate(output):
+        if float(x)==1.0:
+            applause_secs.append(i)
+    applause_ranges=seconds_list_to_ranges(applause_secs)
+    if (plot==True)&(len(applause_ranges)>0):
+        import matplotlib.pyplot as plt
+        import pandas as pd
+        import numpy as np
+        print applause_ranges
+        print '\n'
+        pd.Series(output).plot()
+        plt.title(inputfile.split('/')[-1])
+        plt.xlabel('Seconds')
+        plt.ylabel('Applause Classification')
+        plt.show()
+    if wav_source==False:
+        os.remove(wav_path)
+    if to_csv==True:
+        if outputfile=='':
+            outputfile=inputfile[:-4]+'_applause.csv'
+        if default_speaker=='': 
+            with open(outputfile, 'w') as csv_fo:
+                applause_ranges_expanded=[(start+buffer_secs,1,duration-buffer_secs) for start,duration in applause_ranges]
+                csv_writer = csv.writer(csv_fo)
+                csv_writer.writerows(applause_ranges_expanded)
+        else:
+            with open(outputfile, 'w') as csv_fo:
+                prev_end='0.0'
+                csv_writer = csv.writer(csv_fo)
+                for start,duration in applause_ranges:
+                    csv_writer.writerow([float(prev_end)+buffer_secs,1,float(start)-float(prev_end)-float(buffer_secs),default_speaker.replace(',',';')])
+                    csv_writer.writerow([start+buffer_secs,0,float(duration)-buffer_secs,'Applause'])
+                    prev_end=start+duration
+                print prev_end
+                print len(output)
+                if (prev_end < len(output)):
+                    csv_writer.writerow([float(prev_end)+buffer_secs,1,float(len(output)-prev_end)-buffer_secs-2,default_speaker.replace(',',';')]) # "-2" is a kluge to make sure final tag doesn't exceed length of audio file
+
+
 
 def main(argv):
-	inputfile = ''
-	outputfile = ''
-	plot=False
-	default_speaker=''
-	to_csv=False
-	try:
-		opts, args = getopt.getopt(argv,"hi:o:pd:c",["ifile=","ofile="])
-	except getopt.GetoptError:
-		print "FindApplause.py -i <inputfile> -o <outputfile> -p -d 'Default Speaker Name'"
-		sys.exit(2)
-	for opt, arg in opts:
-		if opt == '-h':
-			print "FindApplause.py -i <inputfile> -o <outputfile> -p -n 'Speaker Name'"
-			sys.exit()
-		elif opt in ("-i", "--ifile"):
-			inputfile = arg
-		elif opt in ("-o", "--ofile"):
-			outputfile = arg
-			to_csv=True
-	if opt in ("-d"):
-			default_speaker=arg
-	if ("-p" in sys.argv[1:]):
-		plot=True
-	if ("-c" in sys.argv[1:])|("--csv" in sys.argv[1:]):
-		to_csv=True
-	if ('.mp3' in inputfile.lower())|('.wav' in inputfile.lower())|('.mp4' in inputfile.lower()):
-		find_applause(inputfile,outputfile,to_csv,plot,default_speaker)
+    inputfile = ''
+    outputfile = ''
+    plot=False
+    default_speaker=''
+    to_csv=False
+    buffer_secs=0
+    try:
+        opts, args = getopt.getopt(argv,"hi:o:pd:cb",["ifile=","ofile="])
+    except getopt.GetoptError:
+        print "FindApplause.py -i <inputfile> -o <outputfile> -p -d 'Default Speaker Name'"
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print "FindApplause.py -i <inputfile> -o <outputfile> -p -n 'Speaker Name'"
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            inputfile = arg
+        elif opt in ("-o", "--ofile"):
+            outputfile = arg
+            to_csv=True
+    if opt in ("-d"):
+            default_speaker=arg
+    if ("-p" in sys.argv[1:]):
+        plot=True
+    if ("-c" in sys.argv[1:])|("--csv" in sys.argv[1:]):
+        to_csv=True
+    if ("-b" in sys.argv[1:])|("--buffer" in sys.argv[1:]):
+        buffer_secs=1
+    if ('.mp3' in inputfile.lower())|('.wav' in inputfile.lower())|('.mp4' in inputfile.lower()):
+        find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs)
 
 
 
