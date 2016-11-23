@@ -2,5 +2,5 @@ pyAudioAnalysis
 pandas
 numpy
 matplotlib
-pyAudioAnalysis
+pyperclip
 pydub
