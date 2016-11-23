@@ -20,7 +20,7 @@ from pydub.utils import get_array_type
 
 
 # Takes list of 0.2-second classifications
-def class_list_to_time_rows(class_list):
+def class_list_to_time_rows(class_list,buffer_secs):
     prev_val=-1
     ranges=[]
     for i, x in enumerate(class_list):
@@ -31,8 +31,8 @@ def class_list_to_time_rows(class_list):
         try: ranges[i].append(ranges[i+1][0])
         except: ranges[i].append(len(class_list))
     for triple in ranges:
-        triple[0]=triple[0]/5.0
-        triple[2]=triple[2]/5.0
+        triple[0]=(triple[0]/5.0)+buffer_secs
+        triple[2]=(triple[2]/5.0)-buffer_secs
     return ranges
 
 
@@ -49,10 +49,12 @@ def find_applause(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
         wav_path=inputfile
     output=aS.speakerDiarization(wav_path,numOfSpeakers=numSpeakers,PLOT=plot)
     output = list(output)
-    class_rows=class_list_to_time_rows(class_list)
+    class_rows=class_list_to_time_rows(output,buffer_secs)
     if wav_source==False:
         os.remove(wav_path)
     if to_csv==True:
+        if outputfile=='':
+            outputfile=inputfile[:-4]+'_diarized.csv'
         with open(outputfile, 'w') as csv_fo:
             csv_writer = csv.writer(csv_fo)
             csv_writer.writerows(class_rows)
@@ -100,7 +102,7 @@ def main(argv):
     if ("-b" in sys.argv[1:])|("--buffer" in sys.argv[1:]):
         buffer_secs=1
     if ('.mp3' in inputfile.lower())|('.wav' in inputfile.lower())|('.mp4' in inputfile.lower()):
-        find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs)
+        find_applause(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs)
 
 
 

@@ -85,7 +85,8 @@ def main(argv):
     for i in range(len(tag_data_relevant)):
         create_tag_excerpt(tag_data_relevant.iloc[i])
     
-
+    if wav_source==False:
+        os.remove(wav_path)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
