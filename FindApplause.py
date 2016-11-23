@@ -65,7 +65,7 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
             outputfile=inputfile[:-4]+'_applause.csv'
         if default_speaker=='': 
             with open(outputfile, 'w') as csv_fo:
-                applause_ranges_expanded=[(start+buffer_secs,1,duration-buffer_secs) for start,duration in applause_ranges]
+                applause_ranges_expanded=[(start+buffer_secs,0,duration-buffer_secs) for start,duration in applause_ranges]
                 csv_writer = csv.writer(csv_fo)
                 csv_writer.writerows(applause_ranges_expanded)
         else:

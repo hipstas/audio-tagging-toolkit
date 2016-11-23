@@ -17,8 +17,9 @@ def main(argv):
     applause=False
     diarized=False
     sleep_time=7.0
+    launch_video=False
     try:
-        opts, args = getopt.getopt(argv,"hi:das:",["input="])
+        opts, args = getopt.getopt(argv,"hi:das:v",["input="])
     except getopt.GetoptError:
         print ""
         sys.exit(2)
@@ -34,6 +35,8 @@ def main(argv):
         diarized=True
     if "-a" in sys.argv[1:]:
         applause=True
+    if "-v" in sys.argv[1:]:
+        launch_video=True
 
     if (diarized & applause):
         print "QuickCheck can only run in one mode at a time, either 'applause' or 'diarized.' Remove one of these options to continue."
@@ -69,15 +72,17 @@ def main(argv):
         if (basename+'_corrected.csv' not in filenames)&(csv_filename in filenames):
             if open(working_dir+csv_filename).read()=='':
                 no_audio_tags.append(filename)
-                break
-            media_path=working_dir+filename
-            csv_path=working_dir+csv_filename
-            pyperclip.copy(basename+'_corrected.csv')
-            print "\nFilename for corrected CSV (copied to clipboard): "+basename+'_corrected.csv\n'
-            subprocess.call(['open', '-a', 'Sonic Visualiser', media_path])
-            time.sleep(sleep_time)
-            subprocess.call(['open', '-a', 'Sonic Visualiser', csv_path])
-            temp=raw_input("Press return to check next file. ")
+            else:
+                media_path=working_dir+filename
+                csv_path=working_dir+csv_filename
+                pyperclip.copy(basename+'_corrected.csv')
+                print "\n  > Filename for corrected CSV (copied to clipboard): "+basename+'_corrected.csv\n'
+                subprocess.call(['open', '-a', 'Sonic Visualiser', media_path])
+                if (launch_video==True)&(filename[-4:]=='.mp4'):
+                    subprocess.call(['open', '-a', 'VLC', media_path])
+                time.sleep(sleep_time)
+                subprocess.call(['open', '-a', 'Sonic Visualiser', csv_path])
+                temp=raw_input("Press return to check next file. ")
 
     print "\nLooks like you've finished this batch. Nice work!\n"
     print "These files' CSVs contain zero tags:"
