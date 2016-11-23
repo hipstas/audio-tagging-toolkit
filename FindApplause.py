@@ -94,9 +94,9 @@ def main(argv):
     to_csv=False
     buffer_secs=0
     try:
-        opts, args = getopt.getopt(argv,"hi:o:pd:cb",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:o:pl:cb",["ifile=","ofile="])
     except getopt.GetoptError:
-        print "FindApplause.py -i <inputfile> -o <outputfile> -p -d 'Default Speaker Name'"
+        print "FindApplause.py -i <inputfile> -o <outputfile> -p -l 'Default label'"
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -107,7 +107,7 @@ def main(argv):
         elif opt in ("-o", "--ofile"):
             outputfile = arg
             to_csv=True
-        elif opt in ("-d"):
+        elif opt in ("-l"):
             default_speaker=arg
     if ("-p" in sys.argv[1:]):
         plot=True
