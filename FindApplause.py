@@ -39,7 +39,7 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
         subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
     else:
         wav_path=inputfile
-    classifier_model_path = './svm_applause_model'
+    classifier_model_path = 'data/svm_applause_model'
     output, classesAll, acc, CM = aS.mtFileClassification(wav_path, classifier_model_path, "svm")
     output = list(output)
     applause_secs=[]
