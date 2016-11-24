@@ -45,7 +45,6 @@ def main(argv):
         print "Please specify working directory with -i."
         sys.exit()
         
-    temp=raw_input("\n*** QuickCheck will copy text to your clipboard, overwriting its current contents. Press return to continue. *** ")
 
     if applause==True:
         csv_ending='_applause.csv'
@@ -60,8 +59,14 @@ def main(argv):
         working_dir=working_dir+'/'
     
     media_filenames=[item for item in filenames if item.lower()[-4:] in ('.mp3','.wav','.mp4')]
+    corrected_media_files=[item for item in media_filenames if item[:-4]+'_corrected.csv' in filenames]
+    
+    print str(len(media_filenames))+" media files in directory, "+str(len(corrected_media_files))+" corrected so far"
     
     no_audio_tags=[]
+
+    temp=raw_input("\n*** QuickCheck will copy text to your clipboard, overwriting its current contents. Press return to continue. ***\n\n")
+ 
     
     for filename in media_filenames:
         basename=os.path.splitext(os.path.basename(filename))[0]
