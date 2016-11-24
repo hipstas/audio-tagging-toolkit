@@ -9,9 +9,6 @@ import time
 
 
 
-
-
-
 def main(argv):
     working_dir=''
     applause=False
@@ -30,7 +27,7 @@ def main(argv):
         elif opt in ("-i", "--in"):
             working_dir = arg
         elif opt in ("-s", "--sleep"):
-            sleep_time=float(5)
+            sleep_time=float(arg)
     if "-d" in sys.argv[1:]:
         diarized=True
     if "-a" in sys.argv[1:]:
