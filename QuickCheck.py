@@ -72,7 +72,7 @@ def main(argv):
         basename=os.path.splitext(os.path.basename(filename))[0]
         csv_filename=basename+csv_ending
         if (basename+'_corrected.csv' not in filenames)&(csv_filename in filenames):
-            if open(working_dir+csv_filename).read()=='':
+            if open(working_dir+csv_filename).read()=='undo_this':
                 no_audio_tags.append(filename)
             else:
                 media_path=working_dir+filename

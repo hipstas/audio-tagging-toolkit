@@ -45,8 +45,9 @@ def main(argv):
     inputfile = ''
     excerpt_class = 1
     tag_path=''
+    out_dir=''
     try:
-        opts, args = getopt.getopt(argv,"hi:t:e:",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:t:e:o:",["ifile="])
     except getopt.GetoptError:
         print ""
         sys.exit(2)
@@ -60,6 +61,8 @@ def main(argv):
             excerpt_class = int(arg)
         elif opt in ("-t", "--tags"):
             tag_path=arg
+        elif opt in ("-o", "--outdir"):
+            out_dir=arg
 
     tag_data = pd.read_csv(tag_path,header=None)
     if len(tag_data.iloc[0])==3:
@@ -77,7 +80,10 @@ def main(argv):
         wav_path=inputfile
     
     tag_data['Pathname']=wav_path
-    tag_data['Out Directory']='/'.join(inputfile.split('/')[:-1])+'/'
+    if out_dir=='':
+        tag_data['Out Directory']='/'.join(inputfile.split('/')[:-1])+'/'
+    else:
+        tag_data['Out Directory']=out_dir
     tag_data['Basename']=inputfile.split('/')[-1][:-4]
     
     tag_data_relevant=tag_data[tag_data['Class']==excerpt_class]
