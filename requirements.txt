@@ -4,3 +4,5 @@ numpy
 matplotlib
 pyperclip
 pydub
+pocketsphinx
+speechrecognition
