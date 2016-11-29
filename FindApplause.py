@@ -92,7 +92,7 @@ def main(argv):
     plot=False
     default_speaker=''
     to_csv=False
-    buffer_secs=0
+    buffer_secs=1
     try:
         opts, args = getopt.getopt(argv,"hi:o:pl:cb",["ifile=","ofile="])
     except getopt.GetoptError:
@@ -115,9 +115,14 @@ def main(argv):
         to_csv=True
     if ("-b" in sys.argv[1:])|("--buffer" in sys.argv[1:]):
         buffer_secs=1
-    if ('.mp3' in inputfile.lower())|('.wav' in inputfile.lower())|('.mp4' in inputfile.lower()):
+    if inputfile.lower()[-4:] in ('.wav','.mp3','.mp4'):
         find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs)
-
+    elif os.path.isdir(sys.argv[-1]):
+        media_dir=sys.argv[-1]
+        media_paths=[os.path.join(media_dir,item) for item in os.listdir(media_dir)]
+        for pathname in media_paths:
+            if pathname.lower()[-4:] in ('.wav','.mp3','.mp4'):
+                find_applause(pathname,outputfile,to_csv,plot,default_speaker,buffer_secs)
 
 
 
