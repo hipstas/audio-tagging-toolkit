@@ -38,7 +38,7 @@ def class_list_to_time_rows(class_list,buffer_secs):
 
 
 
-def find_applause(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
+def diarize(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
     wav_source=True
     if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
         wav_source=False                         # if input is MP3
@@ -58,18 +58,6 @@ def find_applause(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
         with open(outputfile, 'w') as csv_fo:
             csv_writer = csv.writer(csv_fo)
             csv_writer.writerows(class_rows)
-            # for start,duration in applause_ranges:
-#                 if float(float(start)-float(prev_end)-(float(buffer_secs)*2))>0.0:
-#                     csv_writer.writerow([float(prev_end)+buffer_secs,1,float(start)-float(prev_end)-(float(buffer_secs)*2),default_speaker.replace(',',';')])
-#                 if float(float(duration)-buffer_secs)>0:
-#                     csv_writer.writerow([start+buffer_secs,0,float(duration)-buffer_secs,'Applause'])
-#                 prev_end=start+duration
-                #print prev_end
-                #print len(output)
-            #if (prev_end < len(output)):
-                #if float(float(len(output)-prev_end)-buffer_secs-1)>0.0:
-                    #csv_writer.writerow([float(prev_end)+buffer_secs,1,float(len(output)-prev_end)-buffer_secs-1,default_speaker.replace(',',';')]) # "-1" is a kluge to make sure final tag doesn't exceed length of audio file
-
 
 
 def main(argv):
@@ -77,7 +65,7 @@ def main(argv):
     outputfile = ''
     plot=False
     to_csv=False
-    buffer_secs=0
+    buffer_secs=1
     numSpeakers=0
     try:
         opts, args = getopt.getopt(argv,"hi:o:pn:cb",["ifile=","ofile="])
@@ -102,7 +90,14 @@ def main(argv):
     if ("-b" in sys.argv[1:])|("--buffer" in sys.argv[1:]):
         buffer_secs=1
     if ('.mp3' in inputfile.lower())|('.wav' in inputfile.lower())|('.mp4' in inputfile.lower()):
-        find_applause(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs)
+        diarize(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs)
+    elif os.path.isdir(sys.argv[-1]):
+        media_dir=sys.argv[-1]
+        media_paths=[os.path.join(media_dir,item) for item in os.listdir(media_dir)]
+        for pathname in media_paths:
+            if pathname.lower()[-4:] in ('.wav','.mp3','.mp4'):
+                diarize(pathname,outputfile,to_csv,plot,numSpeakers,buffer_secs)
+
 
 
 
