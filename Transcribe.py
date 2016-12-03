@@ -5,6 +5,7 @@ import os
 import array
 import random
 import speech_recognition as sr
+import subprocess
 
 
 #-i --infile
