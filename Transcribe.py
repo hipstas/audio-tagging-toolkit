@@ -9,10 +9,8 @@ import subprocess
 
 
 #-i --infile
-#-o --outfile (csv) (if none, replace file extension with cab)
-#-p --plot  / plot and print applause ranges to shell in hh:mm:ss format
-#-n --name (default speaker for non-applause segments)
-
+#-o --outfile (csv) (if none, replace file extension with .csv)
+#-t --txt Plain text output
 
 
 def transcribe(inputfile,outputfile,to_txt):
