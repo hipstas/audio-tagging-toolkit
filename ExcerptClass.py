@@ -29,9 +29,9 @@ def create_tag_excerpt(row):
     start_msec = start * 1000.0
     duration_msec = duration * 1000
     clip_data = song[start_msec:start_msec+duration_msec]
-    if len(row)==3:
+    if len(row)==6:
         clip_pathname=row['Out Directory']+row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'.wav'
-    elif len(row)>3:
+    elif len(row)>6:
         clip_pathname=row['Out Directory']+row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'_label_'+str(row['Label'])+'.wav'
     clip_data=clip_data.set_channels(1)
     clip_data.export(clip_pathname, format="wav", parameters=["-ar 44100", "-acodec pcm_s16le"])
@@ -87,10 +87,10 @@ def main(argv):
     tag_data['Basename']=inputfile.split('/')[-1][:-4]
     
     tag_data_relevant=tag_data[tag_data['Class']==excerpt_class]
-    
+
     for i in range(len(tag_data_relevant)):
         create_tag_excerpt(tag_data_relevant.iloc[i])
-    
+
     if wav_source==False:
         os.remove(wav_path)
 

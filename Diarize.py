@@ -11,6 +11,10 @@ from itertools import groupby
 from operator import itemgetter
 from pydub import AudioSegment
 from pydub.utils import get_array_type
+from datetime import datetime
+
+
+
 
 
 #-i --infile
@@ -42,7 +46,7 @@ def diarize(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
     wav_source=True
     if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
         wav_source=False                         # if input is MP3
-        temp_filename=inputfile.split('/')[-1]+'_temp.wav'
+        temp_filename=inputfile.split('/')[-1]+str(datetime.now()).replace(' ','__').replace(':','_')+'.wav'
         wav_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
         subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
     else:
