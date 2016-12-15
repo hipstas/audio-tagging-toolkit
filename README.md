@@ -1,7 +1,3 @@
-Options
-
-- -i
-
 
 
 Install dependencies:
