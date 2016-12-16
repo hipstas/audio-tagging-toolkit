@@ -62,6 +62,9 @@ def diarize(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
         with open(outputfile, 'w') as csv_fo:
             csv_writer = csv.writer(csv_fo)
             csv_writer.writerows(class_rows)
+            if len(class_rows)>0:
+                    csv_fo.write('\n\n## Classifier run by '+str(os.getlogin()))
+                    csv_fo.write('\n## '+strftime("%Y-%m-%d %H:%M:%S", gmtime())+' GMT')
 
 
 def main(argv):
