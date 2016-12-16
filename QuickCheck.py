@@ -6,6 +6,7 @@ import pyperclip
 import subprocess
 import random
 import time
+from time import gmtime, strftime
 
 
 
@@ -13,7 +14,7 @@ def main(argv):
     working_dir=''
     applause=False
     diarized=False
-    sleep_time=7.0
+    sleep_time=5.0
     launch_video=False
     try:
         opts, args = getopt.getopt(argv,"hi:das:v",["input="])
@@ -85,11 +86,20 @@ def main(argv):
                 time.sleep(sleep_time)
                 subprocess.call(['open', '-a', 'Sonic Visualiser', csv_path])
                 temp=raw_input("Press return to check next file. ")
-
+                
+                if os.path.isfile(working_dir+basename+'_corrected.csv'):
+                    with open(working_dir+basename+'_corrected.csv') as fi:
+                        temp_csv=fi.read()
+                    with open(working_dir+basename+'_corrected.csv','w') as fo:
+                        fo.write(temp_csv)
+                        fo.write('\n\n## Edited by '+str(os.getlogin()))
+                        fo.write('\n## '+strftime("%Y-%m-%d %H:%M:%S", gmtime())+' GMT')
+                
     print "\nLooks like you've finished this batch. Nice work!\n"
-    print "These files' CSVs contain zero tags:"
-    for filename in no_audio_tags:
-        print filename
+    if len(no_audio_tags)>0:
+        print "These files' CSVs contain zero tags:"
+        for filename in no_audio_tags:
+            print filename
 
 
 
