@@ -6,7 +6,7 @@ import array
 import random
 import speech_recognition as sr
 import subprocess
-
+from time import gmtime, strftime
 
 #-i --infile
 #-o --outfile (csv) (if none, replace file extension with .csv)
