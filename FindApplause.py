@@ -95,10 +95,12 @@ def main(argv):
     to_csv=False
     buffer_secs=1
     try:
-        opts, args = getopt.getopt(argv,"hi:o:pl:cb",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:o:pl:cb:",["ifile=","ofile="])
     except getopt.GetoptError:
         print "FindApplause.py -i <inputfile> -o <outputfile> -p -l 'Default label'"
         sys.exit(2)
+    if ("-b" in sys.argv[1:])|("--buffer" in sys.argv[1:]):
+        buffer_secs=1
     for opt, arg in opts:
         if opt == '-h':
             print "FindApplause.py -i <inputfile> -o <outputfile> -p -n 'Speaker Name'"
@@ -110,20 +112,22 @@ def main(argv):
             to_csv=True
         elif opt in ("-l"):
             default_speaker=arg
+        elif opt in ("-b"):
+            buffer_secs=int(arg)
     if ("-p" in sys.argv[1:]):
         plot=True
     if ("-c" in sys.argv[1:])|("--csv" in sys.argv[1:]):
         to_csv=True
-    if ("-b" in sys.argv[1:])|("--buffer" in sys.argv[1:]):
-        buffer_secs=1
     if inputfile.lower()[-4:] in ('.wav','.mp3','.mp4'):
         find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs)
     elif os.path.isdir(sys.argv[-1]):
         media_dir=sys.argv[-1]
         media_paths=[os.path.join(media_dir,item) for item in os.listdir(media_dir)]
+        counter=1
         for pathname in media_paths:
             if pathname.lower()[-4:] in ('.wav','.mp3','.mp4'):
                 find_applause(pathname,outputfile,to_csv,plot,default_speaker,buffer_secs)
+            print "****** "+str(counter)+" complete of "+str(len(media_paths))+" ******"
 
 
 
