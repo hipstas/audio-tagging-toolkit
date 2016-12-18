@@ -2,7 +2,8 @@ pyAudioAnalysis
 pandas
 numpy
 matplotlib
+scikit-learn==0.18
 pyperclip
 pydub
-pocketsphinx
 speechrecognition
+pocketsphinx

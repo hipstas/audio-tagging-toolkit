@@ -1,9 +1,27 @@
+```bash
+apt-get update -y && apt-get upgrade -y
+pip install -U pip
+pip install virtualenv
+```
+
+
+
+Create virtual environment:
+
+```bash
+virtualenv attk_env
+source attk_env/bin/activate
+cd audio-tagging-toolkit/
+```
+
+
+
 
 
 Install dependencies:
 
 ```bash
-pip install -i dependencies.txt
+pip install --user -r dependencies.txt
 ```
 >Note: Let me know if this dependency list is incomplete: stephen.mclaughlin@utexas.edu
 
