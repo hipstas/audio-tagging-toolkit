@@ -21,7 +21,7 @@ cd audio-tagging-toolkit/
 Install dependencies:
 
 ```bash
-pip install --user -r dependencies.txt
+pip install --user -r requirements.txt
 ```
 >Note: Let me know if this dependency list is incomplete: stephen.mclaughlin@utexas.edu
 
