@@ -1,6 +1,7 @@
 pyAudioAnalysis
 pandas
 numpy
+scipy
 matplotlib
 scikit-learn==0.18
 pyperclip
