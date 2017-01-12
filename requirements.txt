@@ -6,5 +6,6 @@ matplotlib
 scikit-learn==0.18
 pyperclip
 pydub
+ffprobe
 speechrecognition
 pocketsphinx
