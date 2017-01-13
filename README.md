@@ -64,3 +64,9 @@ cd /path/to/audio-tagging-toolkit
 
 python Diarize.py -b -c /Users/mclaugh/Desktop/attktest/
 ```
+Launch QuickCheck script:
+
+```bash
+cd /path/to/audio-tagging-toolkit
+python QuickCheck.py -a -v -i /path/to/audio/files
+```
