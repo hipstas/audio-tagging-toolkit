@@ -46,7 +46,7 @@ Batch applause classification:
 ```bash
 cd /path/to/audio-tagging-toolkit
 
-python FindApplause.py -c -b -l "Speaker Name" path/to/directory/
+python FindApplause.py -c -b -l "Speaker Name" /path/to/directory/
 ```
 
 Diarize a single file:
