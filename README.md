@@ -33,7 +33,7 @@ sudo pip install -r requirements.txt
 ```
 >Note: Let me know if this dependency list is incomplete for your system: stephen.mclaughlin@utexas.edu
 
-Locate applause in single file:
+Locate applause in single file, with non-applause segments labeled "Speaker Name" and a 2-second buffer on either side of each transition:
 
 ```bash
 cd /path/to/audio-tagging-toolkit
@@ -41,7 +41,7 @@ cd /path/to/audio-tagging-toolkit
 python FindApplause.py -c -b 2 -l "Speaker Name" -i /path/to/audio.mp3
 ```
 
-Batch applause classification:
+Batch applause classification with CSV output, default 1-second buffer, and label for non-applause regions:
 
 ```bash
 cd /path/to/audio-tagging-toolkit
@@ -64,9 +64,18 @@ cd /path/to/audio-tagging-toolkit
 
 python Diarize.py -b -c /Users/mclaugh/Desktop/attktest/
 ```
-Launch QuickCheck script:
+
+Launch QuickCheck script to rapidly review applause/speaker labels in Sonic Visualiser:
 
 ```bash
 cd /path/to/audio-tagging-toolkit
 python QuickCheck.py -a -v -i /path/to/audio/files
+```
+
+QuickCheck diarization mode:
+
+
+```bash
+cd /path/to/audio-tagging-toolkit
+python QuickCheck.py -d -v -i /path/to/audio/files
 ```
