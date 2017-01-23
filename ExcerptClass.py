@@ -11,13 +11,6 @@ import subprocess
 
 
 
-# Tying it all together
-
-## Passed a row of tag metadata, this function extracts the corresponding audio and writes
-## a WAV file.
-
-
-
 
 def create_tag_excerpt(row):
     try:
