@@ -19,8 +19,8 @@ def create_tag_excerpt(row):
         print "ERROR: "+row['Pathname']+" can't be found."
     start = row['Start']
     duration = row['Duration']
-    start_msec = start * 1000.0
-    duration_msec = duration * 1000
+    start_msec = float(start) * 1000.0
+    duration_msec = float(duration) * 1000
     clip_data = song[start_msec:start_msec+duration_msec]
     if len(row)==6:
         clip_pathname=row['Out Directory']+row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'.wav'

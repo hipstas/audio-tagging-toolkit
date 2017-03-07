@@ -65,6 +65,16 @@ cd /path/to/audio-tagging-toolkit
 python Diarize.py -b -c /Users/mclaugh/Desktop/attktest/
 ```
 
+Excerpt a class:
+
+```bash
+for f in /Volumes/Turcich-2012/AAPB_Test_Haystack/*_king_gradientboosting.csv; do
+python ExcerptClass.py ;
+done
+```
+
+
+
 Launch QuickCheck script to rapidly review applause/speaker labels in Sonic Visualiser:
 
 ```bash
