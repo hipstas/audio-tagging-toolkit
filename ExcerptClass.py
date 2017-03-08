@@ -7,7 +7,8 @@ import subprocess
 
 
 
-def create_tag_excerpt(row,audio_path):
+def create_tag_excerpt(row,audio_path,song):
+    from pydub import AudioSegment
     start = row['Start']
     duration = row['Duration']
     start_msec = float(start) * 1000.0
@@ -17,13 +18,7 @@ def create_tag_excerpt(row,audio_path):
     elif len(row)>6:
         clip_pathname=row['Out Directory']+row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'_label_'+str(row['Label'])+'.wav'
     if not os.path.exists(clip_pathname):
-        try:
-            if row['Pathname'][-4:]=='.mp3':
-                song = AudioSegment.from_mp3(row['Pathname'])
-            else:
-                song = AudioSegment.from_wav(audio_path)
-        except:
-            print "ERROR: "+audio_path+" can't be found."
+        
         clip_data = song[start_msec:start_msec+duration_msec]
         #clip_data=clip_data.set_channels(1)
         clip_data.export(clip_pathname, format="wav")    
@@ -50,16 +45,16 @@ def main(argv):
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
-            print(arg)
+            #print(arg)
         elif opt in ("-e", "--excerptclass"):
             excerpt_class = int(arg)
-            print(arg)
+            #print(arg)
         elif opt in ("-t", "--tags"):
             tag_path=arg
-            print(tag_path)
+            #print(tag_path)
         elif opt in ("-o", "--outdir"):
             out_dir=arg
-            print(out_dir)
+            print("*** Audio output directory: "+out_dir)
 
     try:
     
@@ -69,10 +64,11 @@ def main(argv):
         basename=inputfile.split('/')[-1][:-4]
         if basename in done_basenames:
             print("*** Basename already processed. ***")
-            return("*** Basename already processed. ***")
+            return("*** Basename '"+basename+"' already processed. ***")
     
     except:
         print("*** Problem loading basenames ***")
+        os.remove(out_dir+'/'+basename+'_start_placeholder.txt')
         return("*** Problem loading basenames ***")
     
     try:
@@ -95,9 +91,6 @@ def main(argv):
     
         if os.path.exists(inputfile):
 
-            done_basenames=[item.split('_start')[0] for item in os.listdir(out_dir) if '_start_' in item]
-            done_basenames=sorted(list(set(done_basenames)))
-
     
             if inputfile.lower()[-4:].lower() in ('.wav','.mp3','.mp4'):
     
@@ -116,13 +109,14 @@ def main(argv):
                 tag_data_relevant=tag_data[tag_data['Class']==excerpt_class]
         
                 if basename not in done_basenames:
+                
                     try:
                         with open(out_dir+'/'+basename+'_start_placeholder.txt','w') as fo:
                             fo.write('\n# placeholder\n')
-                        
                         print("Wrote placeholder file.")
                     except: pass
-                    
+                
+                
                     wav_source=True
                     if inputfile.lower()[-4:]=='.mp4':     # Creates a temporary WAV
                         wav_source=False                         # if input is MP4
@@ -131,20 +125,44 @@ def main(argv):
                         subprocess.call(['ffmpeg', '-y', '-i', inputfile, audio_path]) # '-y' option overwrites existing file if present
                     else:
                         audio_path=inputfile
-        
+
+
+                    song=None
+                    
+                    try:
+                        if inputfile[-4:].lower()=='.mp3':
+                            song = AudioSegment.from_mp3(audio_path)
+                        else:
+                            song = AudioSegment.from_wav(audio_path)
+                    except:
+                        print("Error loading audio with pyDub.")
+                        os.remove(out_dir+'/'+basename+'_start_placeholder.txt')
+                        return("Error loading audio with pyDub.")
+
+
+
+                    #### Batch extracting specified WAV clips ###
                     for i in range(len(tag_data_relevant)):
-                        create_tag_excerpt(tag_data_relevant.iloc[i],audio_path)
-                    #try:
-                        #subprocess.call(['rm','''"""'''+out_dir+'/'+basename+'_start_'+'''"""'''])
-                        #print("Deleted placeholder file.")
-                    #except: pass
+                        print("*** Extracting file "+str(i)+" of "+str(len(tag_data_relevant))+". ***\n")
+                        create_tag_excerpt(tag_data_relevant.iloc[i],audio_path,song)
+                  
+                    try:
+                        os.remove(out_dir+basename+'_start_placeholder.txt')
+                    except:
+                        pass
+                    
+                    if wav_source==False:
+                        os.remove(audio_path)
+
+                    
+                    print("*** All segments extracted! ***")
+                    
                 else: print("\n** Basename already processessed. **\n")
             else: print("\n** Not an acceptable media format. **\n")
         else: print("\n** Audio file does not exist. **\n")
 
 
-        if wav_source==False:
-            os.remove(audio_path)
+        
 
     except:
         print("Some error.")
