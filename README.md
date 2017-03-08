@@ -68,8 +68,30 @@ python Diarize.py -b -c /Users/mclaugh/Desktop/attktest/
 Excerpt a class:
 
 ```bash
+
+cd /Users/mclaugh/Dropbox/WGBH_ARLO_Project/audio-tagging-toolkit/
+
 for f in /Volumes/Turcich-2012/AAPB_Test_Haystack/*_king_gradientboosting.csv; do
-python ExcerptClass.py ;
+base=$(basename """$f""" _king_gradientboosting.csv)
+python ExcerptClass.py -i """/Volumes/Turcich-2012/AAPB_Test_Haystack/$base.mp3""" -t """$f""" -e 0 -o "/Volumes/Turcich-2012/AAPB_excerpt_output/";
+done
+
+for f in /Volumes/Turcich-2012/AAPB_Test_Haystack/*_king_gradientboosting.csv; do
+base=$(basename """$f""" _king_gradientboosting.csv)
+python ExcerptClass.py -i """/Volumes/Turcich-2012/AAPB_Test_Haystack/$base.mp4""" -t """$f""" -e 0 -o "/Volumes/Turcich-2012/AAPB_excerpt_output/";
+done
+```
+
+Excerpt from MP4s only:
+
+```bash
+cd /Users/mclaugh/Dropbox/WGBH_ARLO_Project/audio-tagging-toolkit/
+
+for f in /Volumes/Turcich-2012/AAPB_Test_Haystack/*.mp4; do
+base=$(basename """$f""" .mp4)
+command="""python ExcerptClass.py -i "/Volumes/Turcich-2012/AAPB_Test_Haystack/$base.mp4" -t "/Volumes/Turcich-2012/AAPB_Test_Haystack/${base}_king_gradientboosting.csv" -e 0 -o "/Volumes/Turcich-2012/AAPB_excerpt_output/" """;
+echo $command
+eval $command;
 done
 ```
 

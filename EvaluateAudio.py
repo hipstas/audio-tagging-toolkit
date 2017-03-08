@@ -9,9 +9,17 @@ import random
 
 mixer.init()
 
-os.chdir('/Volumes/Turcich-2012/AAPB_excerpt_output/')
+#/Volumes/Turcich-2012/AAPB_excerpt_output_MLK_gradientboosting_Mar-8/
+#/Volumes/Turcich-2012/AAPB_excerpt_output_MLK_SVM_Mar-8/
 
-filenames=sorted([item for item in os.listdir('/Volumes/Turcich-2012/AAPB_excerpt_output/') if item!='.DS_Store'])
+working_dir='/Volumes/Turcich-2012/AAPB_excerpt_output_MLK_SVM_Mar-8/'
+
+classifier_name='MLK_SVM'
+
+
+os.chdir(working_dir)
+
+filenames=sorted([item for item in os.listdir(working_dir) if item!='.DS_Store'])
 
 random.shuffle(filenames)
 
@@ -52,11 +60,11 @@ root.grid_rowconfigure(0,weight=1)
 previous_file=''
 
 try:
-    with open('/Volumes/Turcich-2012/AAPB_excerpt_output/king_gradientboosting_evaluation.txt') as fi:
+    with open(working_dir+'_'+classifier_name+'_evaluation.txt') as fi:
         previous_file = fi.read()
 except: pass
 
-fo=open('/Volumes/Turcich-2012/AAPB_excerpt_output/king_gradientboosting_evaluation.txt','w')
+fo=open(working_dir+'_'+classifier_name+'_evaluation.txt','w')
 
 fo.write(previous_file+'\n')
 
