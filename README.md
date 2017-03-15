@@ -1,22 +1,32 @@
-The basics:
+Install Ubuntu dependencies:
 
 ```bash
 apt-get update -y && apt-get upgrade -y
-pip install -U pip
-pip install --user virtualenv
 sudo apt-get install python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose
 sudo apt-get -y install swig
 sudo apt-get -y install libpulse-dev
-```
 
-Install FFmpeg with MP3 support (at your own risk):
+pip install -U pip
+pip install virtualenv
 
-```bash
+#Install FFmpeg with MP3 support (at your own risk):
+
 sudo add-apt-repository -y ppa:mc3man/trusty-media
 sudo apt-get update
 sudo apt-get -y dist-upgrade
 sudo apt-get -y install ffmpeg
 ```
+
+
+Install Mac dependencies:
+
+```bash
+brew install ffmpeg --with-fdk-aac --with-ffplay --with-freetype --with-gpl --with-libass --with-libfdk-aac --with-libfreetype --with-libmp3lame --with-libopus --with-libquvi --with-libvorbis --with-libvpx --with-libx264 --with-libx265 --with-nonfree --with-opus --with-x265
+
+pip install -U pip
+pip install virtualenv
+```
+
 
 Create virtual environment:
 
@@ -29,6 +39,7 @@ source attk_env/bin/activate
 Install dependencies:
 
 ```bash
+cd /path/to/audio-tagging-toolkit
 sudo pip install -r requirements.txt
 ```
 >Note: Let me know if this dependency list is incomplete for your system: stephen.mclaughlin@utexas.edu
@@ -110,4 +121,10 @@ QuickCheck diarization mode:
 ```bash
 cd /path/to/audio-tagging-toolkit
 python QuickCheck.py -d -v -i /path/to/audio/files
+```
+
+Assign random tags:
+
+```bash
+python RandomTags.py -s 3 -n 3 -e -i /path/to/example.mp3 -o /path/to/output_dir/
 ```

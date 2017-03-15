@@ -1,4 +1,3 @@
-pyAudioAnalysis
 pandas
 numpy
 scipy
@@ -9,3 +8,5 @@ pydub
 ffprobe
 speechrecognition
 pocketsphinx
+pyAudioAnalysis
+tqdm
