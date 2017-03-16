@@ -31,8 +31,9 @@ def main(argv):
     segments_path=''
     out_dir=''
     mono=False
+    script_path=os.path.dirname(os.path.realpath(sys.argv[0]))
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:m",["ifile="])
+        opts, args = getopt.getopt(argv[1:],"hi:s:o:m",["ifile="])
     except getopt.GetoptError:
         print ""
         sys.exit(2)
@@ -51,10 +52,10 @@ def main(argv):
 
     segments_df = pd.read_csv(segments_path,header=None)
     segments_df.columns=["Instants","Names"]
-    
+
     if out_dir=='':
         out_dir='/'.join(inputfile.split('/')[:-1])+'/'
-    
+
     wav_source=True
     if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
         wav_source=False                         # if input is MP3
@@ -63,16 +64,11 @@ def main(argv):
         subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
     else:
         wav_path=inputfile
-    
+
     excerpt_segments(segments_df,inputfile,out_dir,mono)
 
     if wav_source==False:
         os.remove(wav_path)
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
-
-
-
-
-
+   main(sys.argv)

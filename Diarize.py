@@ -78,8 +78,9 @@ def main(argv):
     to_csv=False
     buffer_secs=1
     numSpeakers=0
+    script_path=os.path.dirname(os.path.realpath(sys.argv[0]))
     try:
-        opts, args = getopt.getopt(argv,"hi:o:pn:cb",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv[1:],"hi:o:pn:cb",["ifile=","ofile="])
     except getopt.GetoptError:
         print "FindApplause.py -i <inputfile> -o <outputfile> -p'"
         sys.exit(2)
@@ -115,11 +116,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
-
-
-
-
-
-
-
+   main(sys.argv)

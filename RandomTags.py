@@ -20,7 +20,7 @@ def media_duration(media_path):
     return duration
 
 
-def random_tag(inputfile, tag_secs=-1, n_clips=-1, per_duration=-1, extract=False):  
+def random_tag(inputfile, tag_secs=-1, n_clips=-1, per_duration=-1, extract=False):
     wav_source=True
     try:
         duration=media_duration(inputfile)-1.0   # Keeping clear of the last second to avoid common errors down the road
@@ -73,8 +73,9 @@ def main(argv):
     tag_secs=3
     n_clips=1
     per_duration=-1
+    script_path=os.path.dirname(os.path.realpath(sys.argv[0]))
     try:
-        opts, args = getopt.getopt(argv,"hi:s:n:p:o:e",["ifile="])
+        opts, args = getopt.getopt(argv[1:],"hi:s:n:p:o:e",["ifile="])
     except getopt.GetoptError:
         print ""
         sys.exit(2)
@@ -101,15 +102,10 @@ def main(argv):
         filename=basename+"|%ssec_x%s_per_%ssec_random.csv"%(str(tag_secs),str(n_clips),str(per_duration))
     tag_table=random_tag(inputfile, tag_secs, n_clips, per_duration, extract=False)
     tags_to_csv(os.path.join(out_dir,filename),tag_table,class_num=0,class_label='')
-    
-    
+
+
 
 
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
-
-
-
-
-
+   main(sys.argv)

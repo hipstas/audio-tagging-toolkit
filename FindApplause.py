@@ -19,18 +19,18 @@ from time import gmtime, strftime
 #-n --name (default speaker for non-applause segments)
 
 
-# Takes list of 1-second segments classified as applause (1.0) or 
+# Takes list of 1-second segments classified as applause (1.0) or
 # non-applause (0.0) and returns list of 2-tuples specifying applause ranges
-def seconds_list_to_ranges(seconds_list): 
-    ranges = []                
+def seconds_list_to_ranges(seconds_list):
+    ranges = []
     for k, g in groupby(enumerate(seconds_list), lambda (i,x):i-x):
         group = map(itemgetter(1), g)
         ranges.append((group[0], group[-1]))
-    ranges=[(i,(x+1)-i) for i,x in ranges]       # Adding 1 to make time range inclusive. Format: (start_time,duration) 
+    ranges=[(i,(x+1)-i) for i,x in ranges]       # Adding 1 to make time range inclusive. Format: (start_time,duration)
     return ranges
 
 
-def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
+def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs,script_path):
     wav_source=True
     if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
         wav_source=False                         # if input is MP3
@@ -39,7 +39,7 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
         subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
     else:
         wav_path=inputfile
-    classifier_model_path = 'data/svm_applause_model'
+    classifier_model_path = os.path.join(script_path,'data/svm_applause_model')
     output, classesAll, acc, CM = aS.mtFileClassification(wav_path, classifier_model_path, "svm")
     output = list(output)
     applause_secs=[]
@@ -63,7 +63,7 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs):
     if to_csv==True:
         if outputfile=='':
             outputfile=inputfile[:-4]+'_applause.csv'
-        if default_speaker=='': 
+        if default_speaker=='':
             with open(outputfile, 'w') as csv_fo:
                 applause_ranges_expanded=[(start+buffer_secs,0,duration-buffer_secs) for start,duration in applause_ranges]
                 csv_writer = csv.writer(csv_fo)
@@ -94,8 +94,9 @@ def main(argv):
     default_speaker=''
     to_csv=False
     buffer_secs=1
+    script_path=os.path.dirname(os.path.realpath(sys.argv[0]))
     try:
-        opts, args = getopt.getopt(argv,"hi:o:pl:cb:",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv[1:],"hi:o:pl:cb:",["ifile=","ofile="])
     except getopt.GetoptError:
         print "FindApplause.py -i <inputfile> -o <outputfile> -p -l 'Default label'"
         sys.exit(2)
@@ -119,7 +120,7 @@ def main(argv):
     if ("-c" in sys.argv[1:])|("--csv" in sys.argv[1:]):
         to_csv=True
     if inputfile.lower()[-4:] in ('.wav','.mp3','.mp4'):
-        find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs)
+        find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs,script_path)
     elif os.path.isdir(sys.argv[-1]):
         media_dir=sys.argv[-1]
         media_paths=[os.path.join(media_dir,item) for item in os.listdir(media_dir)]
@@ -133,11 +134,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
-
-
-
-
-
-
-
+    main(sys.argv)
