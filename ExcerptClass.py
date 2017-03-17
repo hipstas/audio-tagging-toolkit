@@ -14,9 +14,9 @@ def create_tag_excerpt(row,audio_path,song):
     start_msec = float(start) * 1000.0
     duration_msec = float(duration) * 1000
     if len(row)<=6:
-        clip_pathname=row['Out Directory']+row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'.wav'
+        clip_pathname=os.path.join(row['Out Directory'], row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'.wav')
     elif len(row)>6:
-        clip_pathname=row['Out Directory']+row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'_label_'+str(row['Label'])+'.wav'
+        clip_pathname=os.path.join(row['Out Directory']+row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'_label_'+str(row['Label'])+'.wav')
     if not os.path.exists(clip_pathname):
 
         clip_data = song[start_msec:start_msec+duration_msec]
