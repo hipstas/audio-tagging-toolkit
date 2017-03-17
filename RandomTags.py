@@ -67,7 +67,7 @@ def tags_to_csv(outputfile,tag_table,class_num=0,class_label=''):
 
 def main(argv):
     inputfile = ''
-    extract=False
+    extract=True
     class_id = 0
     out_dir=''
     tag_secs=3
@@ -93,8 +93,6 @@ def main(argv):
             per_duration = float(arg)
         elif opt in ("-o", "--out"):
             out_dir=arg
-        if '-e' in sys.argv[1:]:
-            extract=True
     pairs=random_tag(inputfile, tag_secs, n_clips, per_duration, extract)
     basename=os.path.splitext(os.path.basename(inputfile))[0]
     filename=basename+"|%ss_x%sec_random.csv"%(str(tag_secs),str(n_clips))
