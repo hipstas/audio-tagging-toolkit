@@ -84,7 +84,7 @@ def tags_to_wav(inputfile,basename,out_dir,tag_table):
     for pair in tag_table:
         start = pair[0]
         duration = pair[1]-pair[0]
-        clip_pathname=os.path.join(out_dir,basename+"_"+str(start)+"s_"+str(duration)+"d.wav")
+        clip_pathname=os.path.join(out_dir,basename+"_start_"+str(start)+"_dur_"+str(duration)+".wav")
         start_msec = float(start) * 1000.0
         duration_msec = float(duration) * 1000
         if not os.path.exists(clip_pathname):
@@ -130,10 +130,10 @@ def main(argv):
     if per_duration > 0:
         filename=basename+"|%ssec_x%s_per_%ssec_random.csv"%(str(tag_secs),str(n_clips),str(per_duration))
     tag_table=random_tag(inputfile, script_path, out_dir, tag_secs, n_clips, per_duration, extract=False)
-    tags_to_csv(os.path.join(out_dir,filename),tag_table,class_num=0,class_label='')
     if extract==True:
         tags_to_wav(inputfile,basename,out_dir,tag_table)
-
+    else:
+        tags_to_csv(os.path.join(out_dir,filename),tag_table,class_num=0,class_label='')
 
 
 
