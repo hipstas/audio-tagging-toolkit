@@ -18,7 +18,6 @@ def create_tag_excerpt(row,audio_path,song):
     elif len(row)>6:
         clip_pathname=os.path.join(row['Out Directory']+row['Basename']+"_start_"+str(start)[:6]+"_dur_"+str(duration)[:6]+'_class_'+str(row['Class'])+'_label_'+str(row['Label'])+'.wav')
     if not os.path.exists(clip_pathname):
-
         clip_data = song[start_msec:start_msec+duration_msec]
         #clip_data=clip_data.set_channels(1)
         clip_data.export(clip_pathname, format="wav")
@@ -135,7 +134,6 @@ def main(argv):
 
                 if wav_source==False:
                     os.remove(audio_path)
-
 
                 print("*** All segments extracted! ***")
 

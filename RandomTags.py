@@ -10,7 +10,6 @@ import pandas as pd
 import numpy as np
 import subprocess
 from time import gmtime, strftime
-import subprocess
 
 
 
@@ -22,7 +21,7 @@ def media_duration(media_path):
     return duration
 
 
-def random_tag(inputfile, tag_secs=-1, n_clips=-1, per_duration=-1, extract=False, script_path, out_dir):
+def random_tag(inputfile, script_path, out_dir, tag_secs=-1, n_clips=-1, per_duration=-1, extract=False):
     wav_source=True
     try:
         duration=media_duration(inputfile)-1.0   # Keeping clear of the last second to avoid common errors down the road
@@ -47,11 +46,10 @@ def random_tag(inputfile, tag_secs=-1, n_clips=-1, per_duration=-1, extract=Fals
         if counter > 1000000:
             print "*** Infinite loop error on: "+inputfile
             break
-        if extract==True:
-            subprocess.call(['python','os.path.join(script_path,'ExcerptClass.py')','-i',inputfile,'',''])
-    return [(start,round(start+tag_secs,2)) for start in sorted(start_times)]  # list of 2-tuples: start and end times for random clips
+        return [(start,round(start+tag_secs,2)) for start in sorted(start_times)]  # list of 2-tuples: start and end times for random clips
 
-python ExcerptClass.py -i /path/to/audio.mp3 -t /path/to/tags.csv -e 1 -o /path/to/output/directory
+
+#python ExcerptClass.py -i /path/to/audio.mp3 -t /path/to/tags.csv -e 1 -o /path/to/output/directory
 
 
 def tags_to_csv(outputfile,tag_table,class_num=0,class_label=''):
@@ -66,6 +64,33 @@ def tags_to_csv(outputfile,tag_table,class_num=0,class_label=''):
             csv_fo.write('\n\n## RandomTags.py run by '+str(os.getlogin()))
             csv_fo.write('\n## '+strftime("%Y-%m-%d %H:%M:%S", gmtime())+' GMT\n')
 
+def tags_to_wav(inputfile,basename,out_dir,tag_table):
+    wav_source=True
+    if inputfile.lower()[-4:]=='.mp4':     # Creates a temporary WAV
+        wav_source=False                         # if input is MP4
+        temp_filename=inputfile.split('/')[-1]+'_temp.wav'
+        audio_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
+        subprocess.call(['ffmpeg', '-y', '-i', inputfile, audio_path]) # '-y' option overwrites existing file if present
+    else:
+        audio_path=inputfile
+    try:
+        if audio_path[-4:].lower()=='.mp3':
+            song = AudioSegment.from_mp3(audio_path)
+        else:
+            song = AudioSegment.from_wav(audio_path)
+    except:
+        print("Error loading audio with pyDub.")
+        return("Error loading audio with pyDub.")
+    for pair in tag_table:
+        start = pair[0]
+        duration = pair[1]-pair[0]
+        clip_pathname=os.path.join(out_dir,basename+"_"+str(start)+"s_"+str(duration)+"d.wav")
+        start_msec = float(start) * 1000.0
+        duration_msec = float(duration) * 1000
+        if not os.path.exists(clip_pathname):
+            clip_data = song[start_msec:start_msec+duration_msec]
+            clip_data=clip_data.set_channels(1)
+            clip_data.export(clip_pathname, format="wav")
 
 
 
@@ -100,14 +125,14 @@ def main(argv):
             out_dir=arg
         if '-e' in sys.argv[1:]:
             extract=True
-    pairs=random_tag(inputfile, tag_secs, n_clips, per_duration, extract)
     basename=os.path.splitext(os.path.basename(inputfile))[0]
     filename=basename+"|%ss_x%sec_random.csv"%(str(tag_secs),str(n_clips))
     if per_duration > 0:
         filename=basename+"|%ssec_x%s_per_%ssec_random.csv"%(str(tag_secs),str(n_clips),str(per_duration))
-    tag_table=random_tag(inputfile, tag_secs, n_clips, per_duration, extract=False,script_path,out_dir)
+    tag_table=random_tag(inputfile, script_path, out_dir, tag_secs, n_clips, per_duration, extract=False)
     tags_to_csv(os.path.join(out_dir,filename),tag_table,class_num=0,class_label='')
-
+    if extract==True:
+        tags_to_wav(inputfile,basename,out_dir,tag_table)
 
 
 
