@@ -10,6 +10,8 @@ import pandas as pd
 import numpy as np
 import subprocess
 from time import gmtime, strftime
+import subprocess
+
 
 
 def media_duration(media_path):
@@ -20,7 +22,7 @@ def media_duration(media_path):
     return duration
 
 
-def random_tag(inputfile, tag_secs=-1, n_clips=-1, per_duration=-1, extract=False):
+def random_tag(inputfile, tag_secs=-1, n_clips=-1, per_duration=-1, extract=False, script_path, out_dir):
     wav_source=True
     try:
         duration=media_duration(inputfile)-1.0   # Keeping clear of the last second to avoid common errors down the road
@@ -45,8 +47,11 @@ def random_tag(inputfile, tag_secs=-1, n_clips=-1, per_duration=-1, extract=Fals
         if counter > 1000000:
             print "*** Infinite loop error on: "+inputfile
             break
+        if extract==True:
+            subprocess.call(['python','os.path.join(script_path,'ExcerptClass.py')','-i',inputfile,'',''])
     return [(start,round(start+tag_secs,2)) for start in sorted(start_times)]  # list of 2-tuples: start and end times for random clips
 
+python ExcerptClass.py -i /path/to/audio.mp3 -t /path/to/tags.csv -e 1 -o /path/to/output/directory
 
 
 def tags_to_csv(outputfile,tag_table,class_num=0,class_label=''):
@@ -67,7 +72,7 @@ def tags_to_csv(outputfile,tag_table,class_num=0,class_label=''):
 
 def main(argv):
     inputfile = ''
-    extract=True
+    extract=False
     class_id = 0
     out_dir=''
     tag_secs=3
@@ -93,12 +98,14 @@ def main(argv):
             per_duration = float(arg)
         elif opt in ("-o", "--out"):
             out_dir=arg
+        if '-e' in sys.argv[1:]:
+            extract=True
     pairs=random_tag(inputfile, tag_secs, n_clips, per_duration, extract)
     basename=os.path.splitext(os.path.basename(inputfile))[0]
     filename=basename+"|%ss_x%sec_random.csv"%(str(tag_secs),str(n_clips))
     if per_duration > 0:
         filename=basename+"|%ssec_x%s_per_%ssec_random.csv"%(str(tag_secs),str(n_clips),str(per_duration))
-    tag_table=random_tag(inputfile, tag_secs, n_clips, per_duration, extract=False)
+    tag_table=random_tag(inputfile, tag_secs, n_clips, per_duration, extract=False,script_path,out_dir)
     tags_to_csv(os.path.join(out_dir,filename),tag_table,class_num=0,class_label='')
 
 

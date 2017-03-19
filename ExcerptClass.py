@@ -58,14 +58,7 @@ def main(argv):
             print("*** Audio output directory: "+out_dir)
 
     try:
-
-        done_basenames=[item.split('_start')[0] for item in os.listdir(out_dir) if '_start_' in item]
-        done_basenames=sorted(list(set(done_basenames)))
-
         basename=inputfile.split('/')[-1][:-4]
-        if basename in done_basenames:
-            print("*** Basename already processed. ***")
-            return("*** Basename '"+basename+"' already processed. ***")
 
     except:
         print("*** Problem loading basenames ***")
@@ -109,56 +102,44 @@ def main(argv):
 
                 tag_data_relevant=tag_data[tag_data['Class']==excerpt_class]
 
-                if basename not in done_basenames:
+                wav_source=True
+                if inputfile.lower()[-4:]=='.mp4':     # Creates a temporary WAV
+                    wav_source=False                         # if input is MP4
+                    temp_filename=inputfile.split('/')[-1]+'_temp.wav'
+                    audio_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
+                    subprocess.call(['ffmpeg', '-y', '-i', inputfile, audio_path]) # '-y' option overwrites existing file if present
+                else:
+                    audio_path=inputfile
 
-                    try:
-                        with open(out_dir+'/'+basename+'_start_placeholder.txt','w') as fo:
-                            fo.write('\n# placeholder\n')
-                        print("Wrote placeholder file.")
-                    except: pass
+                song=None
 
-
-                    wav_source=True
-                    if inputfile.lower()[-4:]=='.mp4':     # Creates a temporary WAV
-                        wav_source=False                         # if input is MP4
-                        temp_filename=inputfile.split('/')[-1]+'_temp.wav'
-                        audio_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
-                        subprocess.call(['ffmpeg', '-y', '-i', inputfile, audio_path]) # '-y' option overwrites existing file if present
+                try:
+                    if inputfile[-4:].lower()=='.mp3':
+                        song = AudioSegment.from_mp3(audio_path)
                     else:
-                        audio_path=inputfile
+                        song = AudioSegment.from_wav(audio_path)
+                except:
+                    print("Error loading audio with pyDub.")
+                    return("Error loading audio with pyDub.")
 
 
-                    song=None
+                #### Batch extracting specified WAV clips ###
+                for i in range(len(tag_data_relevant)):
+                    print("*** Extracting file "+str(i)+" of "+str(len(tag_data_relevant))+". ***\n")
+                    create_tag_excerpt(tag_data_relevant.iloc[i],audio_path,song)
 
-                    try:
-                        if inputfile[-4:].lower()=='.mp3':
-                            song = AudioSegment.from_mp3(audio_path)
-                        else:
-                            song = AudioSegment.from_wav(audio_path)
-                    except:
-                        print("Error loading audio with pyDub.")
-                        os.remove(out_dir+'/'+basename+'_start_placeholder.txt')
-                        return("Error loading audio with pyDub.")
+                try:
+                    os.remove(out_dir+basename+'_start_placeholder.txt')
+                except:
+                    pass
 
-
-
-                    #### Batch extracting specified WAV clips ###
-                    for i in range(len(tag_data_relevant)):
-                        print("*** Extracting file "+str(i)+" of "+str(len(tag_data_relevant))+". ***\n")
-                        create_tag_excerpt(tag_data_relevant.iloc[i],audio_path,song)
-
-                    try:
-                        os.remove(out_dir+basename+'_start_placeholder.txt')
-                    except:
-                        pass
-
-                    if wav_source==False:
-                        os.remove(audio_path)
+                if wav_source==False:
+                    os.remove(audio_path)
 
 
-                    print("*** All segments extracted! ***")
+                print("*** All segments extracted! ***")
 
-                else: print("\n** Basename already processessed. **\n")
+
             else: print("\n** Not an acceptable media format. **\n")
         else: print("\n** Audio file does not exist. **\n")
 

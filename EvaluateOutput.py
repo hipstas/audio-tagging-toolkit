@@ -41,11 +41,11 @@ def showImage():
         lbl1.configure(image=image_tk)
         btn.configure(text = "load image!", command=showImage1)
 
-def showImage1(): 
+def showImage1():
         lbl1.configure(image=image_tk1)
-        btn.configure(text = "load image!", command=showImage)     
+        btn.configure(text = "load image!", command=showImage)
 
-root = Tk()    
+root = Tk()
 c = ttk.Frame(root, padding=(5, 5, 12, 0))
 c.grid(column=0, row=0, sticky=(N,W,E,S))
 root.grid_columnconfigure(0, weight=1)
@@ -131,20 +131,3 @@ play_sound()
 root.mainloop()
 
 fo.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
