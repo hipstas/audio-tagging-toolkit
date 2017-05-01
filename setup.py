@@ -29,5 +29,6 @@ setup(name='attk',
         'pyAudioAnalysis',
         'tqdm'
       ],
+      include_package_data=True,
       keywords='audio music speech classification tagging labeling ml supervised',
       zip_safe=False)
