@@ -147,7 +147,7 @@ def main(argv):
     except:
         print("Some error.")
 
-    print("*** Reached end of script. ***\n\n")
+    #print("*** Reached end of script. ***\n\n")
 
 
 if __name__ == "__main__":
