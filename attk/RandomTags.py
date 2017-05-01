@@ -13,10 +13,19 @@ from time import gmtime, strftime
 
 
 
+class RandomTags:
+    """
+    RandomTags
+    """
+
+    def __init__(self):
+        self.temp=0
+
+
+
+
 def media_duration(media_path):
-    proc = subprocess.Popen(['ffprobe','-v','error','-show_entries','format=duration',\
-        '-of','default=noprint_wrappers=1:nokey=1',media_path],\
-        stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    proc = subprocess.Popen(['ffprobe','-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',media_path],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     duration = float(proc.stdout.read().strip())
     return duration
 
@@ -91,6 +100,8 @@ def tags_to_wav(inputfile,basename,out_dir,tag_table):
             clip_data = song[start_msec:start_msec+duration_msec]
             clip_data=clip_data.set_channels(1)
             clip_data.export(clip_pathname, format="wav")
+
+
 
 
 
