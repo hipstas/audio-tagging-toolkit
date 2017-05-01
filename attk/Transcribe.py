@@ -8,6 +8,10 @@ import speech_recognition as sr
 import subprocess
 from time import gmtime, strftime
 
+here = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(here)
+
+
 #-i --infile
 #-o --outfile (csv) (if none, replace file extension with .csv)
 #-t --txt Plain text output
@@ -41,7 +45,7 @@ def transcribe(inputfile,outputfile,to_txt):
         print transcript
     if wav_source==False:
         os.remove(wav_path)
-     
+
 
 
 def main(argv):
@@ -80,10 +84,3 @@ def main(argv):
 
 if __name__ == "__main__":
    main(sys.argv[1:])
-
-
-
-
-
-
-

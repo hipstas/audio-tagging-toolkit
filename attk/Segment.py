@@ -8,6 +8,9 @@ import pandas as pd
 import numpy as np
 import subprocess
 
+here = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(here)
+
 
 def excerpt_segments(segments_df,inputfile,out_dir,mono):
     try:

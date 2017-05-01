@@ -5,6 +5,9 @@ import sys, getopt
 import time, datetime
 import subprocess
 
+here = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(here)
+
 
 
 def create_tag_excerpt(row,audio_path,song):

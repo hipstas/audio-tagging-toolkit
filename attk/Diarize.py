@@ -15,6 +15,8 @@ from datetime import datetime
 from time import gmtime, strftime
 
 
+here = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(here)
 
 
 #-i --infile
