@@ -1,0 +1,6 @@
+~*
+.DS_Store
+*.mp3
+*.mp4
+*.wav
+.ipynb*
