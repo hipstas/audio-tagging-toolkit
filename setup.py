@@ -1,4 +1,10 @@
 from setuptools import setup
+import os
+from ez_setup import use_setuptools
+use_setuptools()
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='attk',
       version='0.0.3',
@@ -8,6 +14,8 @@ setup(name='attk',
       author_email='stephen.mclaughlin@utexas.edu',
       license='Apache 2.0',
       packages=['attk'],
+      long_description=read('README.md'),
+      classifiers=["Development Status :: 3 - Alpha"],
       install_requires=[
         'pandas',
         'numpy',
