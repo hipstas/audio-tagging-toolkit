@@ -18,8 +18,6 @@ from time import gmtime, strftime
 here = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(here)
 
-os.chdir(here) ##### Sloppy; just dealing with relative reference to model in audioSegmentation
-
 
 #-i --infile
 #-o --outfile (csv) (if none, replace file extension with cab)
@@ -58,7 +56,12 @@ def diarize(inputfile,outputfile,to_csv=True,plot=False,numSpeakers=0,buffer_sec
             subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
         else:
             wav_path=inputfile
+
+        working_dir = os.path.abspath('./')
+        os.chdir(here)
         output=aS.speakerDiarization(wav_path,numOfSpeakers=numSpeakers,PLOT=plot)
+        os.chdir(working_dir)
+
         output = list(output)
         class_rows=class_list_to_time_rows(output,buffer_secs)
         if wav_source==False:
