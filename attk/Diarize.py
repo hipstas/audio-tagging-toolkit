@@ -18,6 +18,8 @@ from time import gmtime, strftime
 here = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(here)
 
+os.chdir(here) ##### Sloppy; just dealing with relative reference to model in audioSegmentation
+
 
 #-i --infile
 #-o --outfile (csv) (if none, replace file extension with cab)

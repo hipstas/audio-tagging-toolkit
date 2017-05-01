@@ -13,6 +13,12 @@ from pydub import AudioSegment
 from pydub.utils import get_array_type
 from time import gmtime, strftime
 
+
+here = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(here)
+
+
+
 #-i --infile
 #-o --outfile (csv) (if none, replace file extension with cab)
 #-p --plot  / plot and print applause ranges to shell in hh:mm:ss format
