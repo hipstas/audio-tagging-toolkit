@@ -2,7 +2,13 @@
 ### Mac Installation
 
 
-First we will install **`ffmpeg`**, a command-line tool for audio and video encoding. First we will install several media codecs and command-line tools, then we will download ffmpeg's source code and compile it before installing. If you've previously installed ffmpeg using Homebrew, uninstall that copy before we begin:
+Install Audio Tagging Toolkit using pip:
+
+```bash
+pip install git+git://github.com/hipstas/audio-tagging-toolkit.git
+```
+
+Next we will install **`ffmpeg`**, a command-line tool for audio and video encoding. First we will install several media codecs and command-line tools, then we will download ffmpeg's source code and compile it before installing. If you've previously installed ffmpeg using Homebrew, uninstall that copy before we begin:
 
 ```bash
 brew uninstall ffmpeg
@@ -21,15 +27,6 @@ cd ffmpeg
 
 make && sudo make install
 ```
-
-Now install Audio Tagging Toolkit using setup.py:
-
-```bash
-cd path/to/audio-tagging-toolkit/
-python setup.py install
-```
-
-
 
 
 
@@ -52,10 +49,14 @@ sudo apt-get -y dist-upgrade
 sudo apt-get -y install ffmpeg
 ```
 
+Now install Audio Tagging Toolkit using pip:
+
 ```bash
-cd /path/to/audio-tagging-toolkit
-sudo pip install -r requirements.txt
+pip install git+git://github.com/hipstas/audio-tagging-toolkit.git
 ```
+
+
+
 
 
 ### Script examples via bash
