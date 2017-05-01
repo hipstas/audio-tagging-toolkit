@@ -71,6 +71,9 @@ def diarize(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
     except:
         print "ERROR in DIARIZE function"
 
+
+
+
 def main(argv):
     inputfile = ''
     outputfile = ''
