@@ -44,7 +44,7 @@ def class_list_to_time_rows(class_list,buffer_secs):
 
 
 
-def diarize(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
+def diarize(inputfile,outputfile,to_csv=True,plot=False,numSpeakers=0,buffer_secs=0):
     try:
         wav_source=True
         if inputfile.lower()[-4:]!='.wav':     # Creates a temporary WAV
@@ -69,7 +69,8 @@ def diarize(inputfile,outputfile,to_csv,plot,numSpeakers,buffer_secs):
                     csv_fo.write('\n\n## Classifier run by '+str(os.getlogin()))
                     csv_fo.write('\n## '+strftime("%Y-%m-%d %H:%M:%S", gmtime())+' GMT')
     except:
-        print "ERROR in DIARIZE function"
+        print "Unexpected error:", sys.exc_info()[0]
+        raise
 
 
 

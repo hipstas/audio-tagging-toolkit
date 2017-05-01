@@ -15,6 +15,7 @@ setup(name='attk',
       packages=['attk'],
       long_description=read('README.md'),
       classifiers=["Development Status :: 3 - Alpha"],
+      data_files=[('data', ['attk/data'])],
       install_requires=[
         'pandas',
         'numpy',
