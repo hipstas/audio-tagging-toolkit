@@ -18,6 +18,8 @@ from time import gmtime, strftime
 here = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(here)
 
+working_dir = os.path.abspath('./')
+
 
 #-i --infile
 #-o --outfile (csv) (if none, replace file extension with cab)
@@ -57,7 +59,6 @@ def diarize(inputfile,outputfile,to_csv=True,plot=False,numSpeakers=0,buffer_sec
         else:
             wav_path=inputfile
 
-        working_dir = os.path.abspath('./')
         os.chdir(here)
         output=aS.speakerDiarization(wav_path,numOfSpeakers=numSpeakers,PLOT=plot)
         os.chdir(working_dir)
