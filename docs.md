@@ -7,20 +7,20 @@
     - diarize
     - main
 
-### ExcerptClass.py
+### ExcerptClass.py   ## --> merge with Segment.py
     - create_tag_excerpt
     - main
 
-### FindApplause.py         ## -> genericize to "Classify.py"
+### FindApplause.py       ## -> genericize to "Classify.py"
     - seconds_list_to_ranges
     - find_applause
     - main
 
 ### RandomTags.py
-    - media_duration      ## -- to utils.py
+    - media_duration      ## --> to utils.py
     - random_tag
-    - tags_to_csv
-    - tags_to_wav
+    - tags_to_csv         ## --> to utils.py
+    - tags_to_wav         ## --> Use Segment.py
     - main
 
 ### Segment.py
@@ -33,6 +33,8 @@
 
 ## Todo
 
-- Create `utils.py`
+- Create `utils.py`:
     - media_duration from RandomTags.py
-    - create TagFile class to pass segments, pathname, and metadata between functions
+    - time range intersect function
+    - temp_wav function -- for working with mp3s and video
+- create TagFile class to pass segments, pathname, and metadata between functions
