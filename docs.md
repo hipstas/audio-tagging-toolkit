@@ -37,4 +37,4 @@
     - media_duration from RandomTags.py
     - time range intersect function
     - temp_wav function -- for working with mp3s and video
-- create TagFile class to pass segments, pathname, and metadata between functions
+- create `TagFile` class to pass segment tables, pathnames, and metadata between functions
