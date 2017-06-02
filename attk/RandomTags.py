@@ -26,47 +26,46 @@ class RandomTags:
         self.temp=0
 
 
-
-
 def media_duration(media_path):
     proc = subprocess.Popen(['ffprobe','-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',media_path],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     duration = float(proc.stdout.read().strip())
     return duration
 
 
-def random_tag(inputfile, script_path, out_dir, tag_secs=-1, n_clips=-1, per_duration=-1, extract=False):
+def randomtag(media_path, out_dir, clip_secs=-1, num_tags=1, per_duration=-1, extract=False):
     wav_source=True
     try:
-        duration=media_duration(inputfile)-1.0   # Keeping clear of the last second to avoid common errors down the road
+        duration=media_duration(media_path)-1.0   # Keeping clear of the last second to avoid common errors down the road
     except:
         print "ERROR: "+media_path
         return None
-    if per_duration>0:
-       n_clips=n_clips*int(round(duration/per_duration))
+    if not per_duration>0:
+        per_duration =  duration
+    num_tags=num_tags*int(round(duration/per_duration))
     start_times=[]
     counter=0
-    while len(start_times) < int(n_clips):
-        rand_time = round(random.random()*(duration-tag_secs),2)
+    while len(start_times) < int(num_tags):
+        rand_time = round(random.random()*(duration-clip_secs),2)
         accepted=True
         for time in start_times:
-            if rand_time < time < (rand_time + tag_secs):  ## Checking for overlap
+            if rand_time < time < (rand_time + clip_secs):  ## Checking for overlap
                 accepted=False
-            if time < rand_time < (time + tag_secs):  ## Checking for overlap
+            if time < rand_time < (time + clip_secs):  ## Checking for overlap
                 accepted=False
         if accepted==True:
             start_times.append(rand_time)
         counter+=1
         if counter > 1000000:
-            print "*** Infinite loop error on: "+inputfile
+            print "*** Infinite loop error on: "+media_path
             break
-        return [(start,round(start+tag_secs,2)) for start in sorted(start_times)]  # list of 2-tuples: start and end times for random clips
+    return [(start,round(start+clip_secs,2)) for start in sorted(start_times)]  # list of 2-tuples: start and end times for random clips
 
 
 #python ExcerptClass.py -i /path/to/audio.mp3 -t /path/to/tags.csv -e 1 -o /path/to/output/directory
 
 
-def tags_to_csv(outputfile,tag_table,class_num=0,class_label=''):
-    with open(outputfile, 'w') as csv_fo:
+def tags_to_csv(csv_filename,tag_table,class_num=0,class_label=''):
+    with open(csv_filename, 'w') as csv_fo:
         csv_writer = csv.writer(csv_fo)
         for start, end in tag_table:
             if class_label=='':
@@ -77,15 +76,15 @@ def tags_to_csv(outputfile,tag_table,class_num=0,class_label=''):
             csv_fo.write('\n\n## RandomTags.py run by '+str(os.getlogin()))
             csv_fo.write('\n## '+strftime("%Y-%m-%d %H:%M:%S", gmtime())+' GMT\n')
 
-def tags_to_wav(inputfile,basename,out_dir,tag_table):
+def tags_to_wav(media_path,basename,out_dir,tag_table):
     wav_source=True
-    if inputfile.lower()[-4:]=='.mp4':     # Creates a temporary WAV
+    if media_path.lower()[-4:] not in ('.mp3','.wav'):     # Creates a temporary WAV
         wav_source=False                         # if input is MP4
-        temp_filename=inputfile.split('/')[-1]+'_temp.wav'
+        temp_filename=media_path.split('/')[-1]+'_temp.wav'
         audio_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
-        subprocess.call(['ffmpeg', '-y', '-i', inputfile, audio_path]) # '-y' option overwrites existing file if present
+        subprocess.call(['ffmpeg', '-y', '-i', media_path, audio_path]) # '-y' option overwrites existing file if present
     else:
-        audio_path=inputfile
+        audio_path=media_path
     try:
         if audio_path[-4:].lower()=='.mp3':
             song = AudioSegment.from_mp3(audio_path)
@@ -111,12 +110,12 @@ def tags_to_wav(inputfile,basename,out_dir,tag_table):
 
 
 def main(argv):
-    inputfile = ''
+    media_path = ''
     extract=False
     class_id = 0
     out_dir=''
-    tag_secs=3
-    n_clips=1
+    clip_secs=3
+    num_tags=1
     per_duration=-1
     script_path=os.path.dirname(os.path.realpath(sys.argv[0]))
     try:
@@ -129,26 +128,26 @@ def main(argv):
             print ""
             sys.exit()
         elif opt in ("-i", "--ifile"):
-            inputfile = arg
+            media_path = arg
         elif opt in ("-s", "--secs"): # tag length in seconds
-            tag_secs = float(arg)
+            clip_secs = float(arg)
         elif opt in ("-n", "--num"): # tag length in seconds
-            n_clips = int(arg)
+            num_tags = int(arg)
         elif opt in ("-p", "--per"):
             per_duration = float(arg)
         elif opt in ("-o", "--out"):
             out_dir=arg
-        if '-e' in sys.argv[1:]:
+        if ('-e' in sys.argv[1:])|('--extract' in sys.argv[1:]):
             extract=True
-    basename=os.path.splitext(os.path.basename(inputfile))[0]
-    filename=basename+"|%ss_x%sec_random.csv"%(str(tag_secs),str(n_clips))
+    basename=os.path.splitext(os.path.basename(media_path))[0]
+    csv_filename=basename+"|%ss_x%sec_random.csv"%(str(clip_secs),str(num_tags))
     if per_duration > 0:
-        filename=basename+"|%ssec_x%s_per_%ssec_random.csv"%(str(tag_secs),str(n_clips),str(per_duration))
-    tag_table=random_tag(inputfile, script_path, out_dir, tag_secs, n_clips, per_duration, extract=False)
+        csv_filename=basename+"|%ssec_x%s_per_%ssec_random.csv"%(str(clip_secs),str(num_tags),str(per_duration))
+    tag_table=randomtag(media_path, out_dir, clip_secs, num_tags, per_duration, extract=False)
     if extract==True:
-        tags_to_wav(inputfile,basename,out_dir,tag_table)
+        tags_to_wav(media_path,basename,out_dir,tag_table)
     else:
-        tags_to_csv(os.path.join(out_dir,filename),tag_table,class_num=0,class_label='')
+        tags_to_csv(os.path.join(out_dir,csv_filename),tag_table,class_num=0,class_label='')
 
 
 
