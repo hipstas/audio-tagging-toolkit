@@ -87,7 +87,7 @@ def main(argv):
     inputfile = ''
     outputfile = ''
     plot=False
-    to_csv=False
+    to_csv=True
     buffer_secs=1
     numSpeakers=0
     script_path=os.path.dirname(os.path.realpath(sys.argv[0]))
