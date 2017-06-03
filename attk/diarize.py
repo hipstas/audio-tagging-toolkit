@@ -14,18 +14,21 @@ from pydub.utils import get_array_type
 from datetime import datetime
 from time import gmtime, strftime
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+
 
 here = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(here)
 
 working_dir = os.path.abspath('./')
 
-
 #-i --infile
-#-o --outfile (csv) (if none, replace file extension with cab)
+#-o --outfile (csv)
 #-p --plot  / plot and print applause ranges to shell in hh:mm:ss format
 #-n --name (default speaker for non-applause segments)
-
 
 # Takes list of 0.2-second classifications
 def class_list_to_time_rows(class_list,buffer_secs):
@@ -48,7 +51,7 @@ def class_list_to_time_rows(class_list,buffer_secs):
 
 
 
-def diarize(inputfile,outputfile='',to_csv=True,numSpeakers=0,buffer_secs=0,plot=False):
+def diarize(inputfile,outputfile='',num_speakers=0,buffer_secs=0,to_csv=True,plot=False):
     if outputfile=='':
         outputfile=inputfile[:-4]+'.diarized.csv'
     try:
@@ -60,11 +63,10 @@ def diarize(inputfile,outputfile='',to_csv=True,numSpeakers=0,buffer_secs=0,plot
             subprocess.call(['ffmpeg', '-y', '-i', inputfile, wav_path]) # '-y' option overwrites existing file if present
         else:
             wav_path=inputfile
-
         os.chdir(here)
-        output=aS.speakerDiarization(wav_path,numOfSpeakers=numSpeakers,PLOT=plot)
+        print('Processing ...')
+        output=aS.speakerDiarization(wav_path,numOfSpeakers=num_speakers,PLOT=plot)
         os.chdir(working_dir)
-
         output = list(output)
         class_rows=class_list_to_time_rows(output,buffer_secs)
         if wav_source==False:
@@ -83,15 +85,13 @@ def diarize(inputfile,outputfile='',to_csv=True,numSpeakers=0,buffer_secs=0,plot
         raise
 
 
-
-
 def main(argv):
     inputfile = ''
     outputfile = ''
     plot=False
     to_csv=True
     buffer_secs=0
-    numSpeakers=0
+    num_speakers=0
     script_path=os.path.dirname(os.path.realpath(sys.argv[0]))
     try:
         opts, args = getopt.getopt(argv[1:],"hi:o:pn:cb:",["ifile=","ofile="])
@@ -107,8 +107,8 @@ def main(argv):
         elif opt in ("-o", "--ofile"):
             outputfile = arg
             to_csv=True
-        elif opt in ("-n","--numspeakers"):
-            numSpeakers = arg
+        elif opt in ("-n","--num_speakers"):
+            num_speakers = arg
         elif opt in ("-p","--plot"):
             plot=True
         elif opt ("-c","--csv"):
@@ -116,13 +116,13 @@ def main(argv):
         elif opt ("-b","--buffer"):
             buffer_secs = arg
     if ('.mp3' in inputfile.lower())|('.wav' in inputfile.lower())|('.mp4' in inputfile.lower()):
-        diarize(inputfile,outputfile,to_csv,numSpeakers,buffer_secs,plot)
+        diarize(inputfile,outputfile,num_speakers,buffer_secs,to_csv,plot)
     elif os.path.isdir(sys.argv[-1]):
         media_dir=sys.argv[-1]
         media_paths=[os.path.join(media_dir,item) for item in os.listdir(media_dir)]
         for pathname in media_paths:
             if pathname.lower()[-4:] in ('.wav','.mp3','.mp4'):
-                diarize(pathname,outputfile,to_csv,numSpeakers,buffer_secs,plot)
+                diarize(pathname,outputfile,num_speakers,buffer_secs,to_csv,plot)
 
 
 
