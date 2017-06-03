@@ -17,15 +17,6 @@ sys.path.append(here)
 
 
 
-class RandomTags:
-    """
-    RandomTags
-    """
-
-    def __init__(self):
-        self.temp=0
-
-
 def media_duration(media_path):
     proc = subprocess.Popen(['ffprobe','-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',media_path],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     duration = float(proc.stdout.read().strip())
