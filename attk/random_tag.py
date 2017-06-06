@@ -21,7 +21,7 @@ def media_duration(media_path):
     return duration
 
 
-def randomtag(media_path, out_dir, clip_secs=-1, num_tags=1, per_duration=-1, extract=False):
+def random_tag(media_path, out_dir, clip_secs=-1, num_tags=1, per_duration=-1, extract=False):
     wav_source=True
     try:
         duration=media_duration(media_path)-1.0   # Keeping clear of the last second to avoid common errors down the road
