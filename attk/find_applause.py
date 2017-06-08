@@ -87,9 +87,6 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs,s
                 if (prev_end < len(output)):
                     if float(float(len(output)-prev_end)-buffer_secs-1)>0.0:
                         csv_writer.writerow([float(prev_end)+buffer_secs,1,float(len(output)-prev_end)-buffer_secs-1,default_speaker.replace(',',';')]) # "-1" is a kluge to make sure final tag doesn't exceed length of audio file
-                if len(applause_ranges)>0:
-                    csv_fo.write('\n\n## Classifier run by '+str(os.getlogin()))
-                    csv_fo.write('\n## '+strftime("%Y-%m-%d %H:%M:%S", gmtime())+' GMT')
 
 
 
