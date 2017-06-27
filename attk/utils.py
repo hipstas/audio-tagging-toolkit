@@ -117,17 +117,31 @@ def smooth(x, window_len=10, window='hanning'):
         return y[window_len:-window_len + 1]
 
 
-seconds_list=[1,2,3,4,7,8,10,11,12,13]
+#label_list=[1,0,0,0,0,1,1,1,1,1,0,0,0]
 
 
-def labels_to_ranges(seconds_list):
-   ranges = []
-   for k, g in groupby(enumerate(seconds_list), lambda (i, x): i - x):
-      group = map(itemgetter(1), g)
-      ranges.append((group[0], group[-1]))
-   return ranges
+def label_to_ranges(label_list,label=1):
+    counter=0
+    seq_list=[]
+    for item in label_list:
+        if item==label:
+            seq_list.append(counter)
+        counter+=1
+    ranges = []
+    for k, g in groupby(enumerate(seq_list), lambda (i, x): i - x):
+        group = map(itemgetter(label), g)
+        ranges.append((group[0], group[-1]))
+    return ranges
 
-labels_to_ranges(seconds_list)
+#label_to_ranges(label_list,label=0)
+
+
+
+
+
+
+
+
 
 
 def subclip(media_path):
