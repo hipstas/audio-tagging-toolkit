@@ -27,7 +27,7 @@ working_dir = os.path.abspath('./')
 
 
 def main(argv):
-   dd=1
+   temp=1
 
 
 def get_mfccs(wav_pathname):
