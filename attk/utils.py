@@ -11,6 +11,7 @@ from numpy import ma
 from aubio import source, pitch
 from moviepy.audio.io import AudioFileClip
 import glob
+import random
 import fnmatch
 
 import warnings
@@ -158,6 +159,20 @@ def find_media_paths(dir_path):
             media_paths.append(os.path.join(root, filename))
     media_paths = [item for item in media_paths if item.lower()[-4:] in ('.mp3', '.mp4', '.wav')]
     return media_paths
+
+
+def temp_wav_path(media_path):
+    if media_path.lower()[-4:]=='.wav':     # Creates a temporary WAV
+        return media_path
+    else:
+        random_id = str(random.random())[2:]
+        temp_filename=os.path.basename(media_path)+'_temp_'+random_id+'.wav'
+        wav_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
+        subprocess.call(['ffmpeg', '-y', '-i', media_path, wav_path]) # '-y' option overwrites existing file if present
+    return wav_path
+
+
+
 
 
 
