@@ -27,7 +27,8 @@ setup(name='attk',
         'speechrecognition',
         'pocketsphinx',
         'pyAudioAnalysis',
-        'tqdm'
+        'tqdm',
+        'requests'
       ],
       include_package_data=True,
       keywords='audio music speech classification tagging labeling ml supervised',

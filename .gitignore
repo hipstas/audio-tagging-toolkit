@@ -5,3 +5,7 @@
 *.wav
 .ipynb*
 *.pyc
+dist/*
+build/*
+.idea*
+attk.egg*
