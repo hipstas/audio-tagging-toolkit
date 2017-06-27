@@ -10,7 +10,8 @@ from operator import itemgetter
 from numpy import ma
 from aubio import source, pitch
 from moviepy.audio.io import AudioFileClip
-
+import glob
+import fnmatch
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -133,25 +134,30 @@ def label_to_ranges(label_list,label=1):
         ranges.append((group[0], group[-1]))
     return ranges
 
-#label_to_ranges(label_list,label=0)
+
+media_path="/Users/mclaugh/Desktop/sharedfolder/speech_clips/Cordell_Sync_CR_104_Sync_5_MCCC_George.40sec.0002.wav"
+out_dir="/Users/mclaugh/Desktop/sharedfolder/speech_clips/"
 
 
+def subclip(media_path,start_time,end_time,out_dir=''):
+    if out_dir=='':
+        out_dir = os.path.dirname(media_path)
+    audio_filename=media_path.split('/')[-1]
+    basename = audio_filename[:-4]
+    start_time = round(float(start_time),3)
+    end_time = round(float(end_time),3)
+    snd = AudioFileClip.AudioFileClip(media_path)
+    out_filename = basename+'__'+str(start_time)+'_'+str(end_time)+'.wav'
+    snd.subclip(start_time,end_time).write_audiofile(os.path.join(out_dir,out_filename))
 
 
-
-
-
-
-
-
-def subclip(media_path):
-        audio_filename=media_path.split('/')[-1]
-        basename = audio_filename[:-4]
-        start_time = round(float(row[1]),3)
-        end_time = round(float(row[2]),3)
-        snd = AudioFileClip.AudioFileClip(media_path)
-        out_filename = basename+'__'+str(start_time)+'_'+str(end_time)+'.wav'
-        snd.subclip(start_time,end_time).write_audiofile(out_filename)
+def find_media_paths(dir_path):
+    media_paths = []
+    for root, dirnames, filenames in os.walk(dir_path):
+        for filename in fnmatch.filter(filenames, '*'):
+            media_paths.append(os.path.join(root, filename))
+    media_paths = [item for item in media_paths if item.lower()[-4:] in ('.mp3', '.mp4', '.wav')]
+    return media_paths
 
 
 
