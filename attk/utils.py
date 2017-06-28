@@ -119,25 +119,19 @@ def smooth(x, window_len=10, window='hanning'):
         return y[window_len:-window_len + 1]
 
 
-#label_list=[1,0,0,0,0,1,1,1,1,1,0,0,0]
 
 
-def labels_to_ranges(label_list,label=1):
+def labels_to_ranges(label_list,label=0):
     counter=0
     seq_list=[]
     for item in label_list:
         if item==label:
             seq_list.append(counter)
         counter+=1
-    ranges = []
-    for k, g in groupby(enumerate(seq_list), lambda (i, x): i - x):
-        group = map(itemgetter(label), g)
-        ranges.append((group[0], group[-1]))
+    ranges = [(t[0][1], t[-1][1]+1) for t in (tuple(g[1]) for g in itertools.groupby(enumerate(seq_list), lambda (i, x): i - x))]
     return ranges
 
 
-media_path="/Users/mclaugh/Desktop/sharedfolder/speech_clips/Cordell_Sync_CR_104_Sync_5_MCCC_George.40sec.0002.wav"
-out_dir="/Users/mclaugh/Desktop/sharedfolder/speech_clips/"
 
 
 def subclip(media_path,start_time,end_time,out_dir=''):
