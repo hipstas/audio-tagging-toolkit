@@ -150,6 +150,7 @@ def subclip(media_path,start_time,end_time,out_dir=''):
     snd = AudioFileClip.AudioFileClip(media_path)
     out_filename = basename+'__'+str(start_time)+'_'+str(end_time)+'.wav'
     snd.subclip(start_time,end_time).write_audiofile(os.path.join(out_dir,out_filename))
+    return os.path.join(out_dir,out_filename)
 
 
 def find_media_paths(dir_path):
