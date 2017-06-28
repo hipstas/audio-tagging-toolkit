@@ -5,7 +5,6 @@ import os
 import numpy as np
 import librosa
 import subprocess
-from itertools import groupby
 from operator import itemgetter
 from numpy import ma
 from aubio import source, pitch
@@ -13,6 +12,7 @@ from moviepy.audio.io import AudioFileClip
 import glob
 import random
 import fnmatch
+import itertools
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
