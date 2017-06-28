@@ -122,7 +122,7 @@ def smooth(x, window_len=10, window='hanning'):
 #label_list=[1,0,0,0,0,1,1,1,1,1,0,0,0]
 
 
-def label_to_ranges(label_list,label=1):
+def labels_to_ranges(label_list,label=1):
     counter=0
     seq_list=[]
     for item in label_list:
