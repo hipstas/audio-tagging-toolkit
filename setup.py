@@ -30,6 +30,7 @@ setup(name='attk',
         'tqdm',
         'requests',
         'aubio',
+        'librosa',
         'moviepy'
       ],
       include_package_data=True,
