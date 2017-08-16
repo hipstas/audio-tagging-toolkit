@@ -39,17 +39,20 @@ def get_mfccs(wav_pathname):
 
 def get_mfccs_and_deltas(wav_pathname):
    sample_array, sample_rate = librosa.load(wav_pathname)
-   mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13)
-   delta = librosa.feature.delta(mfcc)
-   delta2 = librosa.feature.delta(mfcc, order=2)
-   mfcc = mfcc.T  ### Transposing tables
-   delta = delta.T  ## (We can instead set the axis above to do this without the extra step)
-   delta2 = delta2.T
-   mfcc_sans_0th = [frame_values[1:] for frame_values in mfcc]
-   all_features = []
-   for i in range(len(mfcc)):
-      all_features.append(list(mfcc_sans_0th[i]) + list(delta[i]) + list(delta2[i]))
-   return all_features
+   if len(sample_array) > 0:
+       mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13)
+       delta = librosa.feature.delta(mfcc)
+       delta2 = librosa.feature.delta(mfcc, order=2)
+       mfcc = mfcc.T  ### Transposing tables
+       delta = delta.T  ## (We can instead set the axis above to do this without the extra step)
+       delta2 = delta2.T
+       mfcc_sans_0th = [frame_values[1:] for frame_values in mfcc]
+       all_features = []
+       for i in range(len(mfcc)):
+           all_features.append(list(mfcc_sans_0th[i]) + list(delta[i]) + list(delta2[i]))
+           return all_features
+    else:
+        return []
 
 
 
