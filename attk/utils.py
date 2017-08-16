@@ -27,32 +27,31 @@ working_dir = os.path.abspath('./')
 
 
 def main(argv):
-   temp=1
+    temp=1
 
 
 def get_mfccs(wav_pathname):
-   sample_array, sample_rate = librosa.load(wav_pathname)
-   mfcc_frames = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13).T
-   mfcc_frames_sans_0th = [frame_values[1:] for frame_values in mfcc_frames]
-   return mfcc_frames_sans_0th
+    sample_array, sample_rate = librosa.load(wav_pathname)
+    mfcc_frames = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13).T
+    mfcc_frames_sans_0th = [frame_values[1:] for frame_values in mfcc_frames]
+    return mfcc_frames_sans_0th
 
 
 def get_mfccs_and_deltas(wav_pathname):
-   sample_array, sample_rate = librosa.load(wav_pathname)
-   if len(sample_array) > 0:
-       mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13)
-       delta = librosa.feature.delta(mfcc)
-       delta2 = librosa.feature.delta(mfcc, order=2)
-       mfcc = mfcc.T  ### Transposing tables
-       delta = delta.T  ## (We can instead set the axis above to do this without the extra step)
-       delta2 = delta2.T
-       mfcc_sans_0th = [frame_values[1:] for frame_values in mfcc]
-       all_features = []
-       for i in range(len(mfcc)):
-           all_features.append(list(mfcc_sans_0th[i]) + list(delta[i]) + list(delta2[i]))
-           return all_features
-    else:
-        return []
+    sample_array, sample_rate = librosa.load(wav_pathname)
+    if len(sample_array) > 0:
+        mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13)
+        delta = librosa.feature.delta(mfcc)
+        delta2 = librosa.feature.delta(mfcc, order=2)
+        mfcc = mfcc.T  ### Transposing tables
+        delta = delta.T  ## (We can instead set the axis above to do this without the extra step)
+        delta2 = delta2.T
+        mfcc_sans_0th = [frame_values[1:] for frame_values in mfcc]
+        all_features = []
+        for i in range(len(mfcc)):
+            all_features.append(list(mfcc_sans_0th[i]) + list(delta[i]) + list(delta2[i]))
+            return all_features
+    else: return []
 
 
 
@@ -170,18 +169,5 @@ def temp_wav_path(media_path):
     return wav_path
 
 
-
-
-
-
-
-#Display
-#from IPython.display import display, Audio
-
-
-
-
-
-
 if __name__ == "__main__":
-   main(sys.argv)
+    main(sys.argv)
