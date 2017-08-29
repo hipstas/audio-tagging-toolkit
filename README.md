@@ -1,7 +1,6 @@
 
 ### Mac Installation
 
-
 Install Audio Tagging Toolkit using pip:
 
 ```bash
@@ -28,8 +27,6 @@ cd ffmpeg
 make && sudo make install
 ```
 
-
-
 ### Install Ubuntu dependencies:
 
 ```bash
@@ -54,10 +51,6 @@ Now install Audio Tagging Toolkit using pip:
 ```bash
 pip install git+git://github.com/hipstas/audio-tagging-toolkit.git
 ```
-
-
-
-
 
 ### Script examples via bash
 
