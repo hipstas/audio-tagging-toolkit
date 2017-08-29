@@ -188,8 +188,8 @@ def batch_extract_vowels(media_dir):
         pass
     filenames = [item for item in os.listdir('./') if item[-4:].lower() in ('.mp3', '.wav')]
     for filename in filenames:
-        vowel_bools = attk.get_vowel_segments(filename)
-        vowel_ranges = attk.labels_to_ranges(vowel_bools, label=True)
+        vowel_bools = get_vowel_segments(filename)
+        vowel_ranges = labels_to_ranges(vowel_bools, label=True)
         sample_rate_val = sample_rate(filename)
         vowel_ranges_secs = []
         for pair in vowel_ranges:
@@ -202,7 +202,7 @@ def batch_extract_vowels(media_dir):
             except Exception as e:
                 print('ERROR: ' + filename)
                 print(e)
-        attk.subclip_list(filename, vowel_ranges_secs, '_vowel_clips')
+        subclip_list(filename, vowel_ranges_secs, '_vowel_clips')
     os.chdir(starting_location)
 
 
