@@ -202,7 +202,8 @@ def batch_extract_vowels(media_dir):
                 duration_samples = int(end_samples) - int(start_samples)
                 start = float(start_samples) * (float(2048) / sample_rate_val)
                 duration_secs = float(duration_samples) * (float(2048) / sample_rate_val)
-                vowel_ranges_secs.append((start, duration_secs))
+                if duration_secs >= 0.05:                                             # discarding vowel segments shorter than 0.05 sec
+                    vowel_ranges_secs.append((start, duration_secs))
             except Exception as e:
                 print('ERROR: ' + filename)
                 print(e)
