@@ -151,13 +151,13 @@ def subclip_list(media_path, range_pairs, out_dir=''):
     file_duration = duration(media_path)
     for pair in range_pairs:
         start = pair[0]
-        duration = pair[1]
-        if (float(start) >= 0.0) & (float(duration) > 0.0):
-            if start + duration > file_duration:
-                duration = file_duration - start
+        duration_secs = pair[1]
+        if (float(start) >= 0.0) & (float(duration_secs) > 0.0):
+            if start + duration_secs > file_duration:
+                duration_secs = file_duration - start
             basename = media_path.split('/')[-1][:-4]
-            out_filename = basename+'__'+str(round(start, 4))+'_'+str(round(duration,4))+'.wav'
-            snd.subclip(float(start),float(start)+float(duration)).write_audiofile(os.path.join(out_dir, out_filename))
+            out_filename = basename+'__'+str(round(start, 4))+'_'+str(round(duration_secs ,4))+'.wav'
+            snd.subclip(float(start),float(start)+float(duration_secs)).write_audiofile(os.path.join(out_dir, out_filename))
 
 
 def find_media_paths(dir_path):
