@@ -133,7 +133,7 @@ def labels_to_ranges(label_list,label=0):
     return ranges
 
 
-def subclip(media_path,start_time,end_time,out_dir=''):
+def subclip(media_path,start_time,end_time,out_dir='./'):
     if out_dir=='':
         out_dir = os.path.dirname(media_path)
     audio_filename=media_path.split('/')[-1]
@@ -148,11 +148,12 @@ def subclip(media_path,start_time,end_time,out_dir=''):
 
 
 
-def extract_pairs(media_path, vowel_ranges, out_dir='./'):
+def subclip_list(media_path, range_pairs, out_dir='./'):
     snd = AudioFileClip.AudioFileClip(media_path)
     file_duration = attk.duration(media_path)
-    for pair in vowel_ranges:
-        start, duration = pair
+    for pair in range_pairs:
+        start = pair[0]
+        duration = pair[1]
         if (float(start) >= 0.0) & (float(duration) > 0.0):
             if start + duration > file_duration:
                 duration = file_duration - start
