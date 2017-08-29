@@ -42,7 +42,7 @@ def get_mfccs_and_deltas(wav_pathname):
     if len(sample_array) == 0:
         return []
     else:
-        mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13)
+        mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=1028, n_mfcc=13)
         delta = librosa.feature.delta(mfcc)
         delta2 = librosa.feature.delta(mfcc, order=2)
         mfcc = mfcc.T  ### Transposing tables
