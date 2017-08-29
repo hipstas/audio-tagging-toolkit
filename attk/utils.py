@@ -32,7 +32,7 @@ def main(argv):
 
 def get_mfccs(wav_pathname):
     sample_array, sample_rate = librosa.load(wav_pathname)
-    mfcc_frames = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13).T
+    mfcc_frames = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13, fmin=100, fmax=5000).T
     mfcc_frames_sans_0th = [frame_values[1:] for frame_values in mfcc_frames]
     return mfcc_frames_sans_0th
 
@@ -42,7 +42,7 @@ def get_mfccs_and_deltas(wav_pathname):
     if len(sample_array) == 0:
         return []
     else:
-        mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13)
+        mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13, fmin=100, fmax=5000)
         delta = librosa.feature.delta(mfcc)
         delta2 = librosa.feature.delta(mfcc, order=2)
         mfcc = mfcc.T  ### Transposing tables
