@@ -100,6 +100,8 @@ def get_vowel_segments(media_path):
 def duration(media_path):
     return float(subprocess.check_output(['ffprobe', '-v', 'quiet', '-of', 'csv=p=0', '-show_entries', 'format=duration', media_path]).strip())
 
+def sample_rate(media_path):
+    return int(subprocess.check_output(['ffprobe', '-v', '0', '-of', 'csv=p=0', '-select_streams', '0', '-show_entries', 'stream=sample_rate', media_path]).strip())
 
 def smooth(x, window_len=10, window='hanning'):
         x=np.array(x)
@@ -175,6 +177,33 @@ def temp_wav_path(media_path):
     wav_path = '/var/tmp/'+temp_filename   # Pathname for temp WAV
     subprocess.call(['ffmpeg', '-y', '-i', media_path, wav_path]) # '-y' option overwrites existing file if present
     return wav_path
+
+
+def batch_extract_vowels(media_dir):
+    starting_location = os.getcwd()
+    os.chdir(media_dir)
+    try:
+        os.mkdir('_vowel_clips')
+    except:
+        pass
+    filenames = [item for item in os.listdir('./') if item[-4:].lower() in ('.mp3', '.wav')]
+    for filename in filenames:
+        vowel_bools = attk.get_vowel_segments(filename)
+        vowel_ranges = attk.labels_to_ranges(vowel_bools, label=True)
+        sample_rate_val = sample_rate(filename)
+        vowel_ranges_secs = []
+        for pair in vowel_ranges:
+            try:
+                start_samples, end_samples = pair
+                duration_samples = int(end_samples) - int(start_samples)
+                start = float(start_samples) * (float(2048) / sample_rate_val)
+                duration_secs = float(duration_samples) * (float(2048) / sample_rate_val)
+                vowel_ranges_secs.append((start, duration_secs))
+            except Exception as e:
+                print('ERROR: ' + filename)
+                print(e)
+        attk.subclip_list(filename, vowel_ranges_secs, '_vowel_clips')
+    os.chdir(starting_location)
 
 
 if __name__ == "__main__":
