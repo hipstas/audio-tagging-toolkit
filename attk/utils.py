@@ -55,7 +55,6 @@ def get_mfccs_and_deltas(wav_pathname):
         return all_features
 
 
-
 def get_vowel_segments(media_path):
     downsample = 1
     samplerate = 44100 // downsample
@@ -96,7 +95,6 @@ def get_vowel_segments(media_path):
     cleaned_pitches = ma.masked_where(confidences < tolerance, pitches)
     cleaned_pitches = ma.masked_where(cleaned_pitches > 1000, cleaned_pitches)
     return list(np.logical_not(cleaned_pitches.mask))
-
 
 
 def duration(media_path):
@@ -146,8 +144,6 @@ def subclip(media_path,start_time,end_time,out_dir='./'):
     return os.path.join(out_dir,out_filename)
 
 
-
-
 def subclip_list(media_path, range_pairs, out_dir='./'):
     snd = AudioFileClip.AudioFileClip(media_path)
     file_duration = attk.duration(media_path)
@@ -162,8 +158,6 @@ def subclip_list(media_path, range_pairs, out_dir='./'):
             snd.subclip(float(start),float(start)+float(duration)).write_audiofile(os.path.join(out_dir, out_filename))
 
 
-
-
 def find_media_paths(dir_path):
     media_paths = []
     for root, dirnames, filenames in os.walk(dir_path):
@@ -174,13 +168,10 @@ def find_media_paths(dir_path):
 
 
 def temp_wav_path(media_path):
-    if media_path.lower()[-4:]=='.wav':     # Creates a temporary WAV
-        return media_path
-    else:
-        random_id = str(random.random())[2:]
-        temp_filename=os.path.basename(media_path)+'_temp_'+random_id+'.wav'
-        wav_path='/var/tmp/'+temp_filename   # Pathname for temp WAV
-        subprocess.call(['ffmpeg', '-y', '-i', media_path, wav_path]) # '-y' option overwrites existing file if present
+    random_id = str(random.random())[2:]
+    temp_filename = os.path.basename(media_path)+'_temp_'+random_id+'.wav'
+    wav_path = '/var/tmp/'+temp_filename   # Pathname for temp WAV
+    subprocess.call(['ffmpeg', '-y', '-i', media_path, wav_path]) # '-y' option overwrites existing file if present
     return wav_path
 
 
