@@ -94,7 +94,11 @@ def get_vowel_segments(media_path):
 
     cleaned_pitches = ma.masked_where(confidences < tolerance, pitches)
     cleaned_pitches = ma.masked_where(cleaned_pitches > 1000, cleaned_pitches)
-    return list(np.logical_not(cleaned_pitches.mask))
+
+    try: output = list(np.logical_not(cleaned_pitches.mask))
+    except: output = []
+
+    return output
 
 
 def duration(media_path):
