@@ -122,8 +122,6 @@ def smooth(x, window_len=10, window='hanning'):
         return y[window_len:-window_len + 1]
 
 
-
-
 def labels_to_ranges(label_list,label=0):
     counter=0
     seq_list=[]
@@ -133,8 +131,6 @@ def labels_to_ranges(label_list,label=0):
         counter+=1
     ranges = [(t[0][1], t[-1][1]+1) for t in (tuple(g[1]) for g in itertools.groupby(enumerate(seq_list), lambda (i, x): i - x))]
     return ranges
-
-
 
 
 def subclip(media_path,start_time,end_time,out_dir=''):
@@ -148,6 +144,23 @@ def subclip(media_path,start_time,end_time,out_dir=''):
     out_filename = basename+'__'+str(start_time)+'_'+str(end_time)+'.wav'
     snd.subclip(start_time,end_time).write_audiofile(os.path.join(out_dir,out_filename))
     return os.path.join(out_dir,out_filename)
+
+
+
+
+def extract_pairs(media_path, vowel_ranges, out_dir='./'):
+    snd = AudioFileClip.AudioFileClip(media_path)
+    file_duration = attk.duration(media_path)
+    for pair in vowel_ranges:
+        start, duration = pair
+        if (float(start) >= 0.0) & (float(duration) > 0.0):
+            if start + duration > file_duration:
+                duration = file_duration - start
+            basename = media_path.split('/')[-1][:-4]
+            out_filename = basename+'__'+str(round(start, 4))+'_'+str(round(duration,4))+'.wav'
+            snd.subclip(float(start),float(start)+float(duration)).write_audiofile(os.path.join(out_dir, out_filename))
+
+
 
 
 def find_media_paths(dir_path):
