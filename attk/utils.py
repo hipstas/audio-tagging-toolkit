@@ -131,7 +131,7 @@ def labels_to_ranges(label_list,label=0):
     return ranges
 
 
-def subclip(media_path,start_time,end_time,out_dir='./'):
+def subclip(media_path,start_time,end_time,out_dir=''):
     if out_dir=='':
         out_dir = os.path.dirname(media_path)
     audio_filename=media_path.split('/')[-1]
@@ -144,7 +144,9 @@ def subclip(media_path,start_time,end_time,out_dir='./'):
     return os.path.join(out_dir,out_filename)
 
 
-def subclip_list(media_path, range_pairs, out_dir='./'):
+def subclip_list(media_path, range_pairs, out_dir=''):
+    if out_dir=='':
+        out_dir = os.path.dirname(media_path)
     snd = AudioFileClip.AudioFileClip(media_path)
     file_duration = attk.duration(media_path)
     for pair in range_pairs:
