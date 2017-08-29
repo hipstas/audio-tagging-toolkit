@@ -148,7 +148,7 @@ def subclip_list(media_path, range_pairs, out_dir=''):
     if out_dir=='':
         out_dir = os.path.dirname(media_path)
     snd = AudioFileClip.AudioFileClip(media_path)
-    file_duration = attk.duration(media_path)
+    file_duration = duration(media_path)
     for pair in range_pairs:
         start = pair[0]
         duration = pair[1]
