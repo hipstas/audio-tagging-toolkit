@@ -42,7 +42,7 @@ def get_mfccs_and_deltas(wav_pathname):
     if len(sample_array) == 0:
         return []
     else:
-        mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=1028, n_mfcc=13)
+        mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=2048, n_mfcc=13)
         delta = librosa.feature.delta(mfcc)
         delta2 = librosa.feature.delta(mfcc, order=2)
         mfcc = mfcc.T  ### Transposing tables
@@ -59,8 +59,8 @@ def get_vowel_segments(media_path):
     downsample = 1
     samplerate = 44100 // downsample
 
-    win_s = 2048 // downsample # fft size
-    hop_s = 2048  // downsample # hop size
+    win_s = 4096 // downsample # fft size
+    hop_s = 4096  // downsample # hop size
 
     s = source(media_path, samplerate, hop_s)
     samplerate = s.samplerate
@@ -200,8 +200,8 @@ def batch_extract_vowels(media_dir):
             try:
                 start_samples, end_samples = pair
                 duration_samples = int(end_samples) - int(start_samples)
-                start = float(start_samples) * (float(2048) / sample_rate_val)
-                duration_secs = float(duration_samples) * (float(2048) / sample_rate_val)
+                start = float(start_samples) * (float(4096) / sample_rate_val)
+                duration_secs = float(duration_samples) * (float(4096) / sample_rate_val)
                 #if duration_secs >= 0.05:                                             # discarding vowel segments shorter than 0.05 sec
                 vowel_ranges_secs.append((start, duration_secs))
             except Exception as e:
