@@ -55,12 +55,12 @@ def get_mfccs_and_deltas(wav_pathname, n_mfcc=13, n_fft=2048, freq_min=100, freq
         return all_features
 
 
-def get_vowel_segments(media_path):
+def get_vowel_segments(media_path, n_fft=2048):
     downsample = 1
     samplerate = 44100 // downsample
 
-    win_s = 4096 // downsample # fft size
-    hop_s = 4096  // downsample # hop size
+    win_s = n_fft // downsample # fft size
+    hop_s = n_fft  // downsample # hop size
 
     s = source(media_path, samplerate, hop_s)
     samplerate = s.samplerate
