@@ -27,22 +27,22 @@ working_dir = os.path.abspath('./')
 
 
 def main(argv):
-    temp=1
+    pass
 
 
-def get_mfccs(wav_pathname, freq_min=100, freq_max=16000, hop_length=2048, n_mfcc=13):
-    sample_array, sample_rate = librosa.load(wav_pathname)
-    mfcc_frames = librosa.feature.mfcc(sample_array, sample_rate, hop_length=hop_length, n_mfcc=n_mfcc, fmin=freq_min, fmax=freq_min).T
+def get_mfccs(wav_pathname, n_mfcc=13, n_fft=2048, freq_min=100, freq_max=16000):
+    sample_array, sample_rate = librosa.load(wav_pathname, sr=44100)
+    mfcc_frames = librosa.feature.mfcc(sample_array, sample_rate, n_fft=n_fft, hop_length=n_fft, n_mfcc=n_mfcc, fmin=freq_min, fmax=freq_max).T
     mfcc_frames_sans_0th = [frame_values[1:] for frame_values in mfcc_frames]
     return mfcc_frames_sans_0th
 
 
-def get_mfccs_and_deltas(wav_pathname, freq_min=100, freq_max=16000, hop_length=2048, n_mfcc=13):
-    sample_array, sample_rate = librosa.load(wav_pathname)
+def get_mfccs_and_deltas(wav_pathname, n_mfcc=13, n_fft=2048, freq_min=100, freq_max=16000):
+    sample_array, sample_rate = librosa.load(wav_pathname, sr=44100)
     if len(sample_array) == 0:
         return []
     else:
-        mfcc = librosa.feature.mfcc(sample_array, sample_rate, hop_length=hop_length, n_mfcc=n_mfcc, fmin=freq_min, fmax=freq_max)
+        mfcc = librosa.feature.mfcc(sample_array, sample_rate, n_fft=n_fft, hop_length=n_fft, n_mfcc=n_mfcc, fmin=freq_min, fmax=freq_max)
         delta = librosa.feature.delta(mfcc)
         delta2 = librosa.feature.delta(mfcc, order=2)
         mfcc = mfcc.T  ### Transposing tables
