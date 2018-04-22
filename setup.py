@@ -6,7 +6,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='attk',
-      version='0.0.85',
+      version='0.0.86',
       description='Audio Tagging Toolkit: A collection of scripts to expedite audio annotation and classifier training.',
       url='https://github.com/hipstas/audio-tagging-toolkit',
       author='Stephen Reid McLaughlin',
@@ -24,9 +24,6 @@ setup(name='attk',
         'pyperclip',
         'pydub',
         'ffprobe',
-        'speechrecognition',
-        'pocketsphinx',
-        #'pyAudioAnalysis',
         'tqdm',
         'requests',
         'aubio',
