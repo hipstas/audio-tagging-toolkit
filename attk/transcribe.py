@@ -49,11 +49,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hi:o:t",["ifile=","ofile="])
     except getopt.GetoptError:
-        print "FindApplause.py -i <inputfile> -o <outputfile> -p'"
+        print("FindApplause.py -i <inputfile> -o <outputfile> -p'")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print "FindApplause.py -i <inputfile> -o <outputfile> -p"
+            print("FindApplause.py -i <inputfile> -o <outputfile> -p")
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg.strip('"')

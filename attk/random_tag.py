@@ -26,7 +26,7 @@ def random_tag(media_path, out_dir, clip_secs=-1, num_tags=1, per_duration=-1, e
     try:
         duration=media_duration(media_path)-1.0   # Keeping clear of the last second to avoid common errors down the road
     except:
-        print "ERROR: "+media_path
+        print("ERROR: " + media_path)
         return None
     if not per_duration>0:
         per_duration =  duration
@@ -45,7 +45,7 @@ def random_tag(media_path, out_dir, clip_secs=-1, num_tags=1, per_duration=-1, e
             start_times.append(rand_time)
         counter+=1
         if counter > 1000000:
-            print "*** Infinite loop error on: "+media_path
+            print("*** Infinite loop error on: "+media_path)
             break
     tag_pairs = [(start,round(start+clip_secs,2)) for start in sorted(start_times)]
     if extract==True:
@@ -116,7 +116,7 @@ def main(argv):
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print ""
+            print("")
             sys.exit()
         elif opt in ("-i", "--ifile"):
             media_path = arg

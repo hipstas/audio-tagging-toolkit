@@ -20,11 +20,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv[1:],"hi:das:v",["input="])
     except getopt.GetoptError:
-        print ""
+        print("")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print "'"
+            print("'")
             sys.exit()
         elif opt in ("-i", "--in"):
             working_dir = arg
@@ -38,13 +38,13 @@ def main(argv):
         launch_video=True
 
     if (diarized & applause):
-        print "QuickCheck can only run in one mode at a time, either 'applause' or 'diarized.' Remove one of these options to continue."
+        print("QuickCheck can only run in one mode at a time, either 'applause' or 'diarized.' Remove one of these options to continue.")
         sys.exit()
     elif not (diarized | applause):
-        print "Please specify 'applause' (-a) or 'diarized' (-d) mode."
+        print("Please specify 'applause' (-a) or 'diarized' (-d) mode.")
         sys.exit()
     if working_dir=='':
-        print "Please specify working directory with -i."
+        print("Please specify working directory with -i.")
         sys.exit()
 
 
@@ -63,7 +63,7 @@ def main(argv):
     media_filenames=[item for item in filenames if item.lower()[-4:] in ('.mp3','.wav','.mp4')]
     corrected_media_files=[item for item in media_filenames if item[:-4]+'_corrected.csv' in filenames]
 
-    print str(len(media_filenames))+" media files in directory, "+str(len(corrected_media_files))+" corrected so far"
+    print(str(len(media_filenames))+" media files in directory, "+str(len(corrected_media_files))+" corrected so far")
 
     no_audio_tags=[]
 
@@ -80,7 +80,7 @@ def main(argv):
                 media_path=working_dir+filename
                 csv_path=working_dir+csv_filename
                 pyperclip.copy(basename+'_corrected.csv')
-                print "\n  > Filename for corrected CSV (copied to clipboard): "+basename+'_corrected.csv\n'
+                print("\n  > Filename for corrected CSV (copied to clipboard): "+basename+'_corrected.csv\n')
                 subprocess.call(['open', '-a', 'Sonic Visualiser', media_path])
                 if (launch_video==True)&(filename[-4:]=='.mp4'):
                     subprocess.call(['open', '-a', 'VLC', media_path])
@@ -96,11 +96,11 @@ def main(argv):
                         fo.write('\n\n## Edited by '+str(os.getlogin()))
                         fo.write('\n## '+strftime("%Y-%m-%d %H:%M:%S", gmtime())+' GMT')
 
-    print "\nLooks like you've finished this batch. Nice work!\n"
+    print("\nLooks like you've finished this batch. Nice work!\n")
     if len(no_audio_tags)>0:
-        print "These files' CSVs contain zero tags:"
+        print("These files' CSVs contain zero tags:")
         for filename in no_audio_tags:
-            print filename
+            print(filename)
 
 
 

@@ -88,11 +88,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv[1:],"hi:t:e:o:",["ifile="])
     except getopt.GetoptError:
-        print ""
+        print("")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print ""
+            print("")
             sys.exit()
         elif opt in ("-i", "--ifile"):
             media_path = arg

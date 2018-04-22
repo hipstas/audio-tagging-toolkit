@@ -26,7 +26,7 @@ random.shuffle(filenames)
 current_file=filenames[0]
 
 def play_sound():
-    print current_file
+    print(current_file)
     global current_file
     current_file=filenames.pop()
     f=mixer.Sound(current_file)

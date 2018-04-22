@@ -47,7 +47,7 @@ def class_list_to_time_rows(class_list,buffer_secs):
             triple[2]=(triple[2]/5.0)-buffer_secs
         return ranges
     except:
-        print "ERROR"
+        print("ERROR")
 
 
 
@@ -93,11 +93,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv[1:],"hi:o:pn:cb:",["ifile=","ofile="])
     except getopt.GetoptError:
-        print "FindApplause.py -i <inputfile> -o <outputfile> -p'"
+        print("FindApplause.py -i <inputfile> -o <outputfile> -p'")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print "FindApplause.py -i <inputfile> -o <outputfile> -p"
+            print("FindApplause.py -i <inputfile> -o <outputfile> -p")
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg.strip('"')

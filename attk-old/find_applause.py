@@ -57,8 +57,8 @@ def find_applause(inputfile,outputfile,to_csv,plot,default_speaker,buffer_secs,s
         import matplotlib.pyplot as plt
         import pandas as pd
         import numpy as np
-        print applause_ranges
-        print '\n'
+        print(applause_ranges)
+        print('\n')
         pd.Series(output).plot()
         plt.title(inputfile.split('/')[-1])
         plt.xlabel('Seconds')
@@ -101,13 +101,13 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv[1:],"hi:o:pl:cb:",["ifile=","ofile="])
     except getopt.GetoptError:
-        print "FindApplause.py -i <inputfile> -o <outputfile> -p -l 'Default label'"
+        print("FindApplause.py -i <inputfile> -o <outputfile> -p -l 'Default label'")
         sys.exit(2)
     if ("-b" in sys.argv[1:])|("--buffer" in sys.argv[1:]):
         buffer_secs=1
     for opt, arg in opts:
         if opt == '-h':
-            print "FindApplause.py -i <inputfile> -o <outputfile> -p -n 'Speaker Name'"
+            print("FindApplause.py -i <inputfile> -o <outputfile> -p -n 'Speaker Name'")
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg.strip('"')
@@ -131,7 +131,7 @@ def main(argv):
         for pathname in media_paths:
             if pathname.lower()[-4:] in ('.wav','.mp3','.mp4'):
                 find_applause(pathname,outputfile,to_csv,plot,default_speaker,buffer_secs)
-            print "****** "+str(counter)+" complete of "+str(len(media_paths))+" ******"
+            print("****** "+str(counter)+" complete of "+str(len(media_paths))+" ******")
 
 
 
